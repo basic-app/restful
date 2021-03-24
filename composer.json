@@ -1,0 +1,12 @@
+{
+    "name": "basic-app/restful",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "BasicApp\\RESTful\\": ""
+        }
+    },
+    "require": {
+        "basic-app/action": "*"
+    }
+}
