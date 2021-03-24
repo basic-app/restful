@@ -8,7 +8,7 @@ namespace BasicApp\RESTful\Actions;
 
 use CodeIgniter\Exceptions\PageNotFoundException;
 
-class ShowAction extends BaseAction
+class ShowAction extends \BasicApp\Action\BaseAction
 {
 
     public function _remap($method, ...$params)

@@ -6,7 +6,7 @@
  */
 namespace BasicApp\RESTful\Actions;
 
-class UpdateAction extends BaseAction
+class UpdateAction extends \BasicApp\Action\BaseAction
 {
 
     public function _remap($method, ...$params)
