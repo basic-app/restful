@@ -6,7 +6,7 @@
  */
 namespace BasicApp\RESTful;
 
-use BasicApp\Action\ActionTrait;
+use BasicApp\Action\ControllerActionTrait;
 use BasicApp\Controller\ControllerTrait;
 
 abstract class BaseResourceController extends \CodeIgniter\RESTful\ResourceController
@@ -14,8 +14,8 @@ abstract class BaseResourceController extends \CodeIgniter\RESTful\ResourceContr
 
     use ControllerTrait;
 
-    use ActionTrait;
+    use ControllerActionTrait;
 
-    use RESTfulTrait;    
+    use RESTfulTrait;
 
 }
