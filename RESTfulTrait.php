@@ -146,5 +146,24 @@ trait RESTfulTrait
         return $this->model->allowedFields;
     }
 
+    public function modelCreateEntity(array $data)
+    {
+        return $this->model->createEntity($data);
+    }
+
+    public function formModelCreateEntity(array $data)
+    {
+        return $this->formModel->createEntity($data);
+    }
+
+    public function modelFindOrFail($id)
+    {
+        return $this->model->findOrFail($id);
+    }
+
+    public function formModelFindOrFail($id)
+    {
+        return $this->formModel->findOrFail($id);
+    }
 
 }

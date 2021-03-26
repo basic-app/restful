@@ -12,9 +12,7 @@ class UpdateAction extends \BasicApp\Action\BaseAction
     public function _remap($method, ...$params)
     {
         return function($method, $id)
-        {
-            assert($this->model ? true : false);
-            
+        {        
             assert($id ? true : false);
 
             $data = $this->modelFind($id);
@@ -34,9 +32,7 @@ class UpdateAction extends \BasicApp\Action\BaseAction
 
             if ($this->modelSave($data->toArray()))
             {
-                $data = $this->modelFind($id);
-
-                assert($data ? true : false);
+                $data = $this->modelFindOrFail($id);
 
                 return $this->respondUpdated([
                     'data' => $data->toArray()

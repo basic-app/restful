@@ -13,8 +13,6 @@ class ListAction extends \BasicApp\Action\BaseAction
     {
         return function($method)
         {
-            assert($this->model ? true : false);
-            
             $elements = $this->modelFindAll();
 
             return $this->respond([

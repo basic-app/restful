@@ -12,9 +12,7 @@ class EditAction extends \BasicApp\Action\BaseAction
     public function _remap($method, ...$params)
     {
         return function($method, $id)
-        {
-            assert($this->model ? true : false);
-            
+        {            
             assert($id ? true : false);
 
             $data = $this->modelFind($id);

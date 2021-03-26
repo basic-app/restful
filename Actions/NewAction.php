@@ -12,10 +12,8 @@ class NewAction extends \BasicApp\Action\BaseAction
     public function _remap($method, ...$params)
     {
         return function($method)
-        {
-            assert($this->model ? true : false);
-            
-            $data = $this->model->createEntity($this->request->getGet());
+        {    
+            $data = $this->modelCreateEntity($this->request->getGet());
 
             return $this->respond([
                 'data' => $data->toArray()

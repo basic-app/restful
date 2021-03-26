@@ -13,9 +13,7 @@ class CreateAction extends \BasicApp\Action\BaseAction
     {
         return function($method)
         {
-            assert($this->model ? true : false);
-
-            $data = $this->model->createEntity($this->request->getGet());
+            $data = $this->modelCreateEntity($this->request->getGet());
 
             $validationErrors = [];
 
@@ -31,9 +29,7 @@ class CreateAction extends \BasicApp\Action\BaseAction
 
                 assert($id ? true : false);
 
-                $data = $this->modelFind($id);
-
-                assert($data ? true : false);
+                $data = $this->modelFindOrFail($id);
             
                 return $this->respondCreated([
                     'insertID' => $id,
