@@ -15,7 +15,7 @@ class UpdateAction extends \BasicApp\Action\BaseAction
         {        
             assert($id ? true : false);
 
-            $data = $this->modelFind($id);
+            $data = $this->formModel->findOne($id);
 
             if (!$data)
             {
@@ -28,22 +28,22 @@ class UpdateAction extends \BasicApp\Action\BaseAction
 
             $body = $this->request->getJSON(true);
 
-            $data->fill($body);
+            $data = $this->formModel->fillEntity($data, $body, $hasChanged);
 
-            if ($this->modelSave($data->toArray()))
+            if ($hasChanged && $this->formModel->save($data->toArray(), $errors))
             {
-                $data = $this->modelFindOrFail($id);
+                $data = $this->formModel->findOrFail($id);
 
                 return $this->respondUpdated([
                     'data' => $data->toArray()
                 ]);
             }
         
-            return $this->respond([
+            return $this->respondInvalidData([
                 'data' => $data->toArray(),
-                'validationErrors' => (array) $this->modelErrors(),
-                'errors' => $errors
-            ], $this->codes['invalid_data']);
+                'validationErrors' => (array) $this->formModel->errors(),
+                'errors' => (array) $errors
+            ]);
         };
     }
 

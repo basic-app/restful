@@ -12,17 +12,17 @@ class EditAction extends \BasicApp\Action\BaseAction
     public function _remap($method, ...$params)
     {
         return function($method, $id)
-        {            
-            assert($id ? true : false);
-
-            $data = $this->modelFind($id);
+        {
+            $data = $this->formModel->findOne($id);
 
             if (!$data)
             {
                 return $this->failNotFound();
             }
 
-            return $this->respond(['data' => $data->toArray()]);
+            return $this->respondOk([
+                'data' => $data->toArray()
+            ]);
         };
     }
 

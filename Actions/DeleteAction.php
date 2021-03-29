@@ -14,27 +14,24 @@ class DeleteAction extends \BasicApp\Action\BaseAction
     public function _remap($method, ...$params)
     {
         return function($method, $id)
-        {            
-            assert($id ? true : false);
-
-            $data = $this->modelFind($id);
+        {
+            $data = $this->model->findOne($id);
 
             if (!$data)
             {
                 return $this->failNotFound();
             }
 
-            $id = $this->modelIdValue($data);
+            $id = $this->model->idValue($data);
 
             assert($id ? true : false);
 
-            $result = $this->modelDelete($id);
+            $result = $this->model->delete($id);
 
             assert($result);
 
             return $this->respondDeleted([
-                'code' => $this->codes['deleted'],
-                'message' => "DELETED"
+                'code' => $this->codes['deleted']
             ]);
         };
     }

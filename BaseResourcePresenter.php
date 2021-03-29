@@ -18,4 +18,6 @@ abstract class BaseResourcePresenter extends \CodeIgniter\RESTful\ResourcePresen
 
     use RESTfulTrait;
 
+    use ResourcePresenterTrait;
+
 }

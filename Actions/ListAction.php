@@ -13,9 +13,9 @@ class ListAction extends \BasicApp\Action\BaseAction
     {
         return function($method)
         {
-            $elements = $this->modelFindAll();
+            $elements = $this->model->all();
 
-            return $this->respond([
+            return $this->respondOk([
                 'elements' => $elements
             ]);
         };

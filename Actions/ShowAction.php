@@ -14,17 +14,15 @@ class ShowAction extends \BasicApp\Action\BaseAction
     public function _remap($method, ...$params)
     {
         return function($method, $id)
-        {            
-            assert($id ? true : false);
-
-            $data = $this->modelFind($id);
+        {
+            $data = $this->model->findOne($id);
 
             if (!$data)
             {
                 return $this->failNotFound();
             }
 
-            return $this->respond([
+            return $this->respondOk([
                 'data' => $data->toArray()
             ]);
         };

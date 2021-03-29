@@ -18,4 +18,6 @@ abstract class BaseResourceController extends \CodeIgniter\RESTful\ResourceContr
 
     use RESTfulTrait;
 
+    use ResourceControllerTrait;
+
 }
