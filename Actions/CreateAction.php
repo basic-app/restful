@@ -27,7 +27,10 @@ class CreateAction extends \BasicApp\Action\BaseAction
             {
                 $id = $this->formModel->insertID();
 
-                assert($id ? true : false);
+                if (!$id)
+                {
+                    return $this->respondCreated();
+                }
 
                 $data = $this->formModel->findOrFail($id);
             
