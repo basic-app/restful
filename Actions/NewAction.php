@@ -13,7 +13,7 @@ class NewAction extends \BasicApp\Action\BaseAction
     {
         return function($method)
         {    
-            $data = $this->modelCreateEntity($this->request->getGet());
+            $data = $this->formModelCreateEntity($this->request->getGet());
 
             return $this->respond([
                 'data' => $data->toArray()
