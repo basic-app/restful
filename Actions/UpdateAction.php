@@ -26,7 +26,7 @@ class UpdateAction extends \BasicApp\Action\BaseAction
 
             $errors = [];
 
-            $body = $this->request->getJSON(true);
+            $body = (array) $this->request->getJSON(true);
 
             $data = $this->formModel->fillEntity($data, $body);
 
