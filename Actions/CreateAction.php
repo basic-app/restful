@@ -13,17 +13,17 @@ class CreateAction extends \BasicApp\Action\BaseAction
     {
         return function($method)
         {
-            $data = $this->formModel->createEntity($this->request->getGet());
+            $default = $this->request->getGet();
+
+            $data = $this->formModel->createEntity($default);
 
             $validationErrors = [];
 
             $errors = [];
 
-            $body = $this->request->getJSON(true);
+            $data = $this->formModel->fillEntity($data, $this->request->getJSON(true));
 
-            $data = $this->formModel->fillEntity($data, $body, $hasChanged);
-
-            if ($hasChanged && $this->formModel->save($data->toArray(), $errors))
+            if ($this->formModel->save($data->toArray(), $errors))
             {
                 $id = $this->formModel->insertID();
 
@@ -42,7 +42,7 @@ class CreateAction extends \BasicApp\Action\BaseAction
         
             return $this->respondInvalidData([
                 'data' => $data->toArray(),
-                'validationErrors' => (array) $this->formModel->errors(),
+                'validationErrors' => $this->formModel->errors(),
                 'errors' => (array) $errors
             ]);
         };

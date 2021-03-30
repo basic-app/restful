@@ -28,9 +28,9 @@ class UpdateAction extends \BasicApp\Action\BaseAction
 
             $body = $this->request->getJSON(true);
 
-            $data = $this->formModel->fillEntity($data, $body, $hasChanged);
+            $data = $this->formModel->fillEntity($data, $body);
 
-            if ($hasChanged && $this->formModel->save($data->toArray(), $errors))
+            if ($this->formModel->save($data->toArray(), $errors))
             {
                 $id = $this->formModel->idValue($data);
 
