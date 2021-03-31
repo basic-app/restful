@@ -32,10 +32,6 @@ class UpdateAction extends \BasicApp\Action\BaseAction
 
             if ($this->formModel->save($data->toArray(), $errors))
             {
-                $id = $this->formModel->idValue($data);
-
-                assert($id ? true : false);
-
                 $data = $this->formModel->findOrFail($id);
 
                 return $this->respondUpdated([
