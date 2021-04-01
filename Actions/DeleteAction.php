@@ -22,7 +22,7 @@ class DeleteAction extends \BasicApp\Action\BaseAction
                 return $this->failNotFound();
             }
 
-            $id = $this->model->idValue($data);
+            $id = $this->model->entityPrimaryKey($data);
 
             assert($id ? true : false);
 

@@ -11,11 +11,22 @@ use CodeIgniter\Exceptions\PageNotFoundException;
 class ShowAction extends \BasicApp\Action\BaseAction
 {
 
+    public $findOne = 'modelFindOne';
+
     public function _remap($method, ...$params)
     {
-        return function($method, $id)
+        $action = $this;
+
+        return function($method, $id) use ($action)
         {
-            $data = $this->model->findOne($id);
+            if ($action->findOne && method_exists($this, $action->findOne))
+            {
+                $data = $this->{$action->findOne}($id);
+            }
+            else
+            {
+                $data = $this->model->findOne($id);
+            }
 
             if (!$data)
             {
