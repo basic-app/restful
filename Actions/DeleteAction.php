@@ -8,25 +8,27 @@ namespace BasicApp\RESTful\Actions;
 
 use CodeIgniter\Exceptions\PageNotFoundException;
 
-class DeleteAction extends \BasicApp\Action\BaseAction
+class DeleteAction extends BaseAction
 {
 
     public function _remap($method, ...$params)
     {
-        return function($method, $id)
+        $action = $this;
+
+        return function($method, $id) use ($action)
         {
-            $data = $this->model->findOne($id);
+            $data = $action->modelFindOne($id);
 
             if (!$data)
             {
                 return $this->failNotFound();
             }
 
-            $id = $this->model->entityPrimaryKey($data);
+            $id = $action->modelEntityPrimaryKey($data);
 
             assert($id ? true : false);
 
-            $result = $this->model->delete($id);
+            $result = $action->modelDelete($id);
 
             assert($result);
 

@@ -8,10 +8,8 @@ namespace BasicApp\RESTful\Actions;
 
 use CodeIgniter\Exceptions\PageNotFoundException;
 
-class ShowAction extends \BasicApp\Action\BaseAction
+class ShowAction extends BaseAction
 {
-
-    public $findOne = 'modelFindOne';
 
     public function _remap($method, ...$params)
     {
@@ -19,14 +17,7 @@ class ShowAction extends \BasicApp\Action\BaseAction
 
         return function($method, $id) use ($action)
         {
-            if ($action->findOne && method_exists($this, $action->findOne))
-            {
-                $data = $this->{$action->findOne}($id);
-            }
-            else
-            {
-                $data = $this->model->findOne($id);
-            }
+            $data = $action->modelFindOne($id);
 
             if (!$data)
             {

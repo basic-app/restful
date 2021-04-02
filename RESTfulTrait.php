@@ -46,4 +46,28 @@ trait RESTfulTrait
         }
     }
 
+    public function callModel($method, $customFunctionName, ...$params)
+    {
+        if (method_exists($this, $customFunctionName))
+        {
+            return $this->{$customFunctionName}(...$params);
+        }
+        else
+        {
+            return $this->model->$method(...$params);
+        }
+    }
+
+    public function callFormModel($method, $customFunctionName, ...$params)
+    {
+        if (method_exists($this, $customFunctionName))
+        {
+            return $this->{$customFunctionName}(...$params);
+        }
+        else
+        {
+            return $this->formModel->$method(...$params);
+        }
+    }
+
 }

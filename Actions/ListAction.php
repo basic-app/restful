@@ -6,14 +6,16 @@
  */
 namespace BasicApp\RESTful\Actions;
 
-class ListAction extends \BasicApp\Action\BaseAction
+class ListAction extends BaseAction
 {
 
     public function _remap($method, ...$params)
     {
-        return function($method)
+        $action = $this;
+
+        return function($method) use ($action)
         {
-            $elements = $this->model->all();
+            $elements = $action->modelAll();
 
             return $this->respondOk([
                 'elements' => $elements

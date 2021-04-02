@@ -6,16 +6,18 @@
  */
 namespace BasicApp\RESTful\Actions;
 
-class UpdateAction extends \BasicApp\Action\BaseAction
+class UpdateAction extends BaseAction
 {
 
     public function _remap($method, ...$params)
     {
-        return function($method, $id)
-        {        
+        $action = $this;
+
+        return function($method, $id) use ($action)
+        {
             assert($id ? true : false);
 
-            $data = $this->formModel->findOne($id);
+            $data = $action->formModelFindOne($id);
 
             if (!$data)
             {
@@ -28,11 +30,11 @@ class UpdateAction extends \BasicApp\Action\BaseAction
 
             $body = (array) $this->request->getJSON(true);
 
-            $data = $this->formModel->fillEntity($data, $body);
+            $data = $action->formModelFillEntity($data, $body);
 
-            if ($this->formModel->save($data->toArray(), $errors))
+            if ($action->formModelSave($data->toArray(), $errors))
             {
-                $data = $this->formModel->findOrFail($id);
+                $data = $action->formModelFindOrFail($id);
 
                 return $this->respondUpdated([
                     'data' => $data->toArray()
@@ -41,7 +43,7 @@ class UpdateAction extends \BasicApp\Action\BaseAction
         
             return $this->respondInvalidData([
                 'data' => $data->toArray(),
-                'validationErrors' => (array) $this->formModel->errors(),
+                'validationErrors' => (array) $action->formModelErrors(),
                 'errors' => (array) $errors
             ]);
         };

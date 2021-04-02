@@ -6,14 +6,16 @@
  */
 namespace BasicApp\RESTful\Actions;
 
-class NewAction extends \BasicApp\Action\BaseAction
+class NewAction extends BaseAction
 {
 
     public function _remap($method, ...$params)
     {
-        return function($method)
+        $action = $this;
+
+        return function($method) use ($action)
         {    
-            $data = $this->formModel->createEntity($this->request->getGet());
+            $data = $action->formModelCreateEntity($this->request->getGet());
 
             return $this->respondOk([
                 'data' => $data->toArray()

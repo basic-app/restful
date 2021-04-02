@@ -6,14 +6,16 @@
  */
 namespace BasicApp\RESTful\Actions;
 
-class EditAction extends \BasicApp\Action\BaseAction
+class EditAction extends BaseAction
 {
 
     public function _remap($method, ...$params)
     {
-        return function($method, $id)
+        $action = $this;
+
+        return function($method, $id) use ($action)
         {
-            $data = $this->formModel->findOne($id);
+            $data = $action->formModelFindOne($id);
 
             if (!$data)
             {

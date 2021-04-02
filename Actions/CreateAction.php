@@ -6,33 +6,35 @@
  */
 namespace BasicApp\RESTful\Actions;
 
-class CreateAction extends \BasicApp\Action\BaseAction
+class CreateAction extends BaseAction
 {
 
     public function _remap($method, ...$params)
     {
-        return function($method)
+        $action = $this;
+
+        return function($method) use ($action)
         {
             $default = $this->request->getGet();
 
-            $data = $this->formModel->createEntity($default);
+            $data = $action->formModelCreateEntity($default);
 
             $validationErrors = [];
 
             $errors = [];
 
-            $data = $this->formModel->fillEntity($data, (array) $this->request->getJSON(true));
+            $data = $action->formModelFillEntity($data, (array) $this->request->getJSON(true));
 
-            if ($this->formModel->save($data->toArray(), $errors))
+            if ($action->formModelSave($data->toArray(), $errors))
             {
-                $id = $this->formModel->insertID();
+                $id = $action->formModelInsertID();
 
                 if (!$id)
                 {
                     return $this->respondCreated();
                 }
 
-                $data = $this->formModel->findOrFail($id);
+                $data = $action->formModelFindOrFail($id);
             
                 return $this->respondCreated([
                     'insertID' => $id,
@@ -42,7 +44,7 @@ class CreateAction extends \BasicApp\Action\BaseAction
         
             return $this->respondInvalidData([
                 'data' => $data->toArray(),
-                'validationErrors' => $this->formModel->errors(),
+                'validationErrors' => $action->formModelErrors(),
                 'errors' => (array) $errors
             ]);
         };
