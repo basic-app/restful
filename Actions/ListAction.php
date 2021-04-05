@@ -23,7 +23,7 @@ class ListAction extends BaseAction
 
                 Assert::notEmpty($parentId);
 
-                $action->model->where($action->parentKey, $parentId);
+                $this->model->where($action->parentKey, $parentId);
             }
 
             $elements = $action->modelAll();
