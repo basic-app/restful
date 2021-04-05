@@ -22,7 +22,7 @@ class EditAction extends BaseAction
                 return $this->failNotFound();
             }
 
-            return $this->respondOk([
+            return $this->respondOK([
                 'data' => $data->toArray()
             ]);
         };

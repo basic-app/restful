@@ -55,7 +55,7 @@ trait ResourceControllerTrait
         return $this->respond($data, $code, $message);
     }
 
-    public function respondOk(array $data, $code = null, string $message = '')
+    public function respondOK(array $data, $code = null, string $message = '')
     {
         $data['status'] = 'OK';
 

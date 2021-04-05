@@ -6,6 +6,8 @@
  */
 namespace BasicApp\RESTful\Actions;
 
+use Webmozart\Assert\Assert;
+
 class ListAction extends BaseAction
 {
 
@@ -15,9 +17,18 @@ class ListAction extends BaseAction
 
         return function($method) use ($action)
         {
+            if ($action->parentKey)
+            {
+                $parentId = $this->request->getGet('parentId');
+
+                Assert::notEmpty($parentId);
+
+                $action->model->where($action->parentKey, $parentId);
+            }
+
             $elements = $action->modelAll();
 
-            return $this->respondOk([
+            return $this->respondOK([
                 'elements' => $elements
             ]);
         };

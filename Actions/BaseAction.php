@@ -9,6 +9,8 @@ namespace BasicApp\RESTful\Actions;
 abstract class BaseAction extends \BasicApp\Action\BaseAction
 {
 
+    public $parentKey;
+
     public $modelOne = 'modelOne';
 
     public $modelFindOrFail = 'modelFindOrFail';

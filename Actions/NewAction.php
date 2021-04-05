@@ -17,7 +17,7 @@ class NewAction extends BaseAction
         {    
             $data = $action->formModelCreateEntity($this->request->getGet());
 
-            return $this->respondOk([
+            return $this->respondOK([
                 'data' => $data->toArray()
             ]);
         };

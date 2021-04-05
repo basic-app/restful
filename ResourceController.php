@@ -9,6 +9,7 @@ namespace BasicApp\RESTful;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use BasicApp\Action\ActionInterface;
 
 class ResourceController extends BaseResourceController
 {
@@ -24,6 +25,8 @@ class ResourceController extends BaseResourceController
         'edit' => 'BasicApp\RESTful\Actions\EditAction',
         'delete' => 'BasicApp\RESTful\Actions\DeleteAction'
     ];
+
+    protected $parentKey;
 
     /**
      * Constructor.
@@ -126,6 +129,16 @@ class ResourceController extends BaseResourceController
     public function delete($id = null)
     {
         return $this->remapAction('delete', $id);
+    }
+
+    protected function createAction(string $className, array $params = []) : ActionInterface
+    {
+        if ($this->parentKey && !array_key_exists('parentKey', $params))
+        {
+            $params['parentKey'] = $this->parentKey;
+        }
+
+        return parent::createAction($className, $params);
     }
 
 }
