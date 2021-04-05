@@ -55,6 +55,10 @@ abstract class BaseAction extends \BasicApp\Action\BaseAction
 
     public $formModelErrors = 'formModelErrors';
 
+    public $formModelEntitySetField = 'formModelEntitySetField';
+
+    public $modelEntitySetField = 'modelEntitySetField';
+
     public function modelOne(...$params)
     {
         return $this->controller->callModel('one', $this->modelOne, ...$params);
@@ -163,6 +167,16 @@ abstract class BaseAction extends \BasicApp\Action\BaseAction
     public function formModelErrors(...$params)
     {
         return $this->controller->callFormModel('errors', $this->formModelErrors, ...$params);
+    }
+
+    public function formModelEntitySetField(...$params)
+    {
+        return $this->controller->callFormModel('entitySetField', $this->formModelEntitySetField, ...$params);
+    }
+
+    public function modelEntitySetField(...$params)
+    {
+        return $this->controller->callModel('entitySetField', $this->modelEntitySetField, ...$params);
     }
 
 }

@@ -6,6 +6,8 @@
  */
 namespace BasicApp\RESTful\Actions;
 
+use Webmozart\Assert\Assert;
+
 class CreateAction extends BaseAction
 {
 
@@ -24,6 +26,15 @@ class CreateAction extends BaseAction
             $errors = [];
 
             $data = $action->formModelFillEntity($data, (array) $this->request->getJSON(true));
+
+            if ($action->parentKey)
+            {
+                $parentId = $this->request->getGet('parentId');
+
+                Assert::notEmpty($parentId, 'parentId not defined.');
+
+                $data = $action->formModelEntitySetField($data, $action->parentKey, $parentId);
+            }
 
             if ($action->formModelSave($data->toArray(), $errors))
             {
