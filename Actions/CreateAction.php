@@ -27,11 +27,15 @@ class CreateAction extends BaseAction
 
             $data = $action->formModelFillEntity($data, (array) $this->request->getJSON(true));
 
+            $parent = null;
+
             if ($action->parentKey)
             {
                 $parentId = $this->request->getGet('parentId');
 
                 Assert::notEmpty($parentId, 'parentId not defined.');
+
+                $parent = $action->modelFindOrFail($parentId, 'Parent not found.');
 
                 $data = $action->formModelEntitySetField($data, $action->parentKey, $parentId);
             }
@@ -49,14 +53,16 @@ class CreateAction extends BaseAction
             
                 return $this->respondCreated([
                     'insertID' => $id,
-                    'data' => $data->toArray()
+                    'data' => $data->toArray(),
+                    'parent' => $parent ? $parent->toArray() : null
                 ]);
             }
         
             return $this->respondInvalidData([
                 'data' => $data->toArray(),
                 'validationErrors' => $action->formModelErrors(),
-                'errors' => (array) $errors
+                'errors' => (array) $errors,
+                'parent' => $parent ? $parent->toArray() : null
             ]);
         };
     }

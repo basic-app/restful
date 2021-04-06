@@ -17,11 +17,15 @@ class ListAction extends BaseAction
 
         return function($method) use ($action)
         {
+            $parent = null;
+
             if ($action->parentKey)
             {
                 $parentId = $this->request->getGet('parentId');
 
                 Assert::notEmpty($parentId);
+
+                $parent = $action->modelFindOrFail($parentId, 'Parent not found.');
 
                 $this->model->where($action->parentKey, $parentId);
             }
@@ -29,7 +33,8 @@ class ListAction extends BaseAction
             $elements = $action->modelAll();
 
             return $this->respondOK([
-                'elements' => $elements
+                'elements' => $elements,
+                'parent' => $parent ? $parent->toArray() : null
             ]);
         };
     }
