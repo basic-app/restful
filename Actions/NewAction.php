@@ -6,6 +6,8 @@
  */
 namespace BasicApp\RESTful\Actions;
 
+use Webmozart\Assert\Assert;
+
 class NewAction extends BaseAction
 {
 
@@ -17,8 +19,22 @@ class NewAction extends BaseAction
         {    
             $data = $action->formModelCreateEntity($this->request->getGet());
 
+            $parent = null;
+
+            if ($action->parentKey)
+            {
+                $parentId = $this->request->getGet('parentId');
+
+                Assert::notEmpty($parentId, 'parentId not defined.');
+
+                $parent = $action->modelFindOrFail($parentId, 'Parent not found.');
+
+                $data = $action->formModelEntitySetField($data, $action->parentKey, $parentId);
+            }
+
             return $this->respondOK([
-                'data' => $data->toArray()
+                'data' => $data->toArray(),
+                'parent' => $parent ? $parent->toArray() : null
             ]);
         };
     }
