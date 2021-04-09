@@ -35,7 +35,7 @@ class CreateAction extends BaseAction
 
                 Assert::notEmpty($parentId, 'parentId not defined.');
 
-                $parent = $action->modelFindOrFail($parentId, 'Parent not found.');
+                $parent = $action->parentModelFindOrFail($parentId, 'Parent not found.');
 
                 $data = $action->formModelEntitySetField($data, $action->parentKey, $parentId);
             }
