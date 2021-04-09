@@ -84,8 +84,10 @@ trait RESTfulTrait
         }
     }
 
-    public function callModel($method, $customFunctionName, ...$params)
+    public function callModel($method, ...$params)
     {
+        $customFunctionName = 'model' . ucfirst($method);
+
         if (method_exists($this, $customFunctionName))
         {
             return $this->{$customFunctionName}(...$params);
@@ -96,8 +98,10 @@ trait RESTfulTrait
         }
     }
 
-    public function callFormModel($method, $customFunctionName, ...$params)
+    public function callFormModel($method, ...$params)
     {
+        $customFunctionName = 'formModel' . ucfirst($method);
+
         if (method_exists($this, $customFunctionName))
         {
             return $this->{$customFunctionName}(...$params);
@@ -108,8 +112,10 @@ trait RESTfulTrait
         }
     }
 
-    public function callParentModel($method, $customFunctionName, ...$params)
+    public function callParentModel($method, ...$params)
     {
+        $customFunctionName = 'parentModel' . ucfirst($method);
+
         if (method_exists($this, $customFunctionName))
         {
             return $this->{$customFunctionName}(...$params);

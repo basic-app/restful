@@ -11,88 +11,64 @@ trait ParentModelTrait
 
     public $parentKey;
 
-    public $parentModelOne = 'parentModelOne';
-
-    public $parentModelFindOrFail = 'parentModelFindOrFail';
-
-    public $parentModelFindOne = 'parentModelFindOne';
-
-    public $parentModelAll = 'parentModelAll';
-
-    public $parentModelCreateEntity = 'parentModelCreateEntity';
-
-    public $parentModelEntityPrimaryKey = 'parentModelEntityPrimaryKey';
-
-    public $parentModelInsertID = 'parentModelInsertID';
-
-    public $parentModelFillEntity = 'parentModelFillEntity';
-
-    public $parentModelSave = 'parentModelSave';
-
-    public $parentModelDelete = 'parentModelDelete';
-
-    public $parentModelErrors = 'parentModelErrors';
-
-    public $parentModelEntitySetField = 'parentModelEntitySetField';
-
     public function parentModelOne(...$params)
     {
-        return $this->controller->callFormModel('one', $this->parentModelOne, ...$params);
+        return $this->controller->callFormModel('one', ...$params);
     }
 
     public function parentModelFindOrFail(...$params)
     {
-        return $this->controller->callFormModel('findOrFail', $this->parentModelFindOrFail, ...$params);
+        return $this->controller->callFormModel('findOrFail', ...$params);
     }    
 
     public function parentModelFindOne(...$params)
     {
-        return $this->controller->callFormModel('findOne', $this->parentModelFindOne, ...$params);
+        return $this->controller->callFormModel('findOne', ...$params);
     }
 
     public function parentModelAll(...$params)
     {
-        return $this->controller->callFormModel('all', $this->parentModelAll, ...$params);
+        return $this->controller->callFormModel('all', ...$params);
     }
 
     public function parentModelCreateEntity(...$params)
     {
-        return $this->controller->callFormModel('createEntity', $this->parentModelCreateEntity, ...$params);
+        return $this->controller->callFormModel('createEntity', ...$params);
     }
 
     public function parentModelEntityPrimaryKey(...$params)
     {
-        return $this->controller->callFormModel('entityPrimaryKey', $this->parentModelEntityPrimaryKey, ...$params);
+        return $this->controller->callFormModel('entityPrimaryKey', ...$params);
     }
 
     public function parentModelInsertID(...$params)
     {
-        return $this->controller->callFormModel('insertID', $this->parentModelInsertID, ...$params);
+        return $this->controller->callFormModel('insertID', ...$params);
     }
 
     public function parentModelFillEntity(...$params)
     {
-        return $this->controller->callFormModel('fillEntity', $this->parentModelFillEntity, ...$params);
+        return $this->controller->callFormModel('fillEntity', ...$params);
     }
 
     public function parentModelSave(...$params)
     {
-        return $this->controller->callFormModel('save', $this->parentModelSave, ...$params);
+        return $this->controller->callFormModel('save', ...$params);
     }
 
     public function parentModelDelete(...$params)
     {
-        return $this->controller->callFormModel('delete', $this->parentModelDelete, ...$params);
+        return $this->controller->callFormModel('delete', ...$params);
     }
 
     public function parentModelErrors(...$params)
     {
-        return $this->controller->callFormModel('errors', $this->parentModelErrors, ...$params);
+        return $this->controller->callFormModel('errors', ...$params);
     }
 
     public function parentModelEntitySetField(...$params)
     {
-        return $this->controller->callFormModel('entitySetField', $this->parentModelEntitySetField, ...$params);
+        return $this->controller->callFormModel('entitySetField', ...$params);
     }
 
 }
