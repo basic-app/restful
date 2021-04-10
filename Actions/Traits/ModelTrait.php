@@ -67,6 +67,6 @@ trait ModelTrait
     public function modelEntitySetField(...$params)
     {
         return $this->controller->callModel('entitySetField', ...$params);
-    }    
+    }
     
 }

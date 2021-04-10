@@ -9,8 +9,6 @@ namespace BasicApp\RESTful\Actions\Traits;
 trait ParentModelTrait
 {
 
-    public $parentKey;
-
     public function parentModelOne(...$params)
     {
         return $this->controller->callFormModel('one', ...$params);

@@ -17,4 +17,6 @@ abstract class BaseAction extends \BasicApp\Action\BaseAction
 
     use Traits\ParentModelTrait;
 
+    public $parentKey;
+
 }
