@@ -29,9 +29,7 @@ class DeleteAction extends BaseAction
 
             $result = $this->model->deleteOrFail($id);
 
-            return $this->respondDeleted([
-                'code' => $this->codes['deleted']
-            ]);
+            return $this->respondDeleted();
         };
     }
 

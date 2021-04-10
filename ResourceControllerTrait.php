@@ -18,6 +18,8 @@ trait ResourceControllerTrait
     {
         $data['status'] = 'DELETED';
 
+        $data['code'] = $this->codes['deleted'];
+
         $data = $this->prepareResponse($data);
 
         return parent::respondDeleted($data, $message);
