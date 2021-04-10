@@ -13,23 +13,23 @@ class NewAction extends BaseAction
 
     public function _remap($method, ...$params)
     {
-        $action = $this;
-
-        return function($method) use ($action)
+        return function($method)
         {    
-            $data = $action->formModelCreateEntity($this->request->getGet());
+            $data = $this->formModel->createEntity($this->request->getGet());
 
             $parent = null;
 
-            if ($action->parentKey)
+            if ($this->parentKey)
             {
+                Assert::notEmpty($this->parentModel);
+
                 $parentId = $this->request->getGet('parentId');
 
                 Assert::notEmpty($parentId, 'parentId not defined.');
 
-                $parent = $action->parentModelFindOrFail($parentId, 'Parent not found.');
+                $parent = $this->parentModel->findOrFail($parentId, 'Parent not found.');
 
-                $data = $action->formModelEntitySetField($data, $action->parentKey, $parentId);
+                $data = $this->formModel->entitySetField($data, $this->parentKey, $parentId);
             }
 
             return $this->respondOK([

@@ -14,9 +14,15 @@ trait RESTfulTrait
 
     protected $formModel;
 
+    protected $parentKey;
+
     protected $parentModelName;
 
     protected $parentModel;
+
+    protected $searchModelName;
+
+    protected $searchModel;
 
     /**
      * Set or change the model this controller is bound to.
@@ -84,45 +90,36 @@ trait RESTfulTrait
         }
     }
 
-    public function callModel($method, ...$params)
+    /**
+     * Set or change the model this controller is bound to.
+     * Given either the name or the object, determine the other.
+     *
+     * @param object|string|null $which
+     *
+     * @return void
+     */
+    public function setSearchModel($which = null)
     {
-        $customFunctionName = 'model' . ucfirst($method);
-
-        if (method_exists($this, $customFunctionName))
+        // save what we have been given
+        if ($which)
         {
-            return $this->{$customFunctionName}(...$params);
+            $this->searchModel = is_object($which) ? $which : null;
+            $this->searchModelName = is_object($which) ? null : $which;
         }
-        else
-        {
-            return $this->model->$method(...$params);
-        }
-    }
 
-    public function callFormModel($method, ...$params)
-    {
-        $customFunctionName = 'formModel' . ucfirst($method);
-
-        if (method_exists($this, $customFunctionName))
+        // make a model object if needed
+        if (empty($this->searchModel) && ! empty($this->searchModelName))
         {
-            return $this->{$customFunctionName}(...$params);
+            if (class_exists($this->searchModelName))
+            {
+                $this->searchModel = model($this->searchModelName);
+            }
         }
-        else
-        {
-            return $this->formModel->$method(...$params);
-        }
-    }
 
-    public function callParentModel($method, ...$params)
-    {
-        $customFunctionName = 'parentModel' . ucfirst($method);
-
-        if (method_exists($this, $customFunctionName))
+        // determine model name if needed
+        if (! empty($this->searchModel) && empty($this->searchModelName))
         {
-            return $this->{$customFunctionName}(...$params);
-        }
-        else
-        {
-            return $this->parentModel->$method(...$params);
+            $this->searchModelName = get_class($this->searchModel);
         }
     }
 

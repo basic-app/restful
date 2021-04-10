@@ -13,43 +13,43 @@ class CreateAction extends BaseAction
 
     public function _remap($method, ...$params)
     {
-        $action = $this;
-
-        return function($method) use ($action)
+        return function($method)
         {
             $default = $this->request->getGet();
 
-            $data = $action->formModelCreateEntity($default);
+            $data = $this->formModel->createEntity($default);
 
             $validationErrors = [];
 
             $errors = [];
 
-            $data = $action->formModelFillEntity($data, (array) $this->request->getJSON(true));
+            $data = $this->formModel->fillEntity($data, (array) $this->request->getJSON(true));
 
             $parent = null;
 
-            if ($action->parentKey)
+            if ($this->parentKey)
             {
+                Assert::notEmpty($this->parentModel);
+
                 $parentId = $this->request->getGet('parentId');
 
                 Assert::notEmpty($parentId, 'parentId not defined.');
 
-                $parent = $action->parentModelFindOrFail($parentId, 'Parent not found.');
+                $parent = $this->parentModel->findOrFail($parentId, 'Parent not found.');
 
-                $data = $action->formModelEntitySetField($data, $action->parentKey, $parentId);
+                $data = $this->formModel->entitySetField($data, $this->parentKey, $parentId);
             }
 
-            if ($action->formModelSave($data->toArray(), $errors))
+            if ($this->formModel->save($data->toArray(), $errors))
             {
-                $id = $action->formModelInsertID();
+                $id = $this->formModel->insertID();
 
                 if (!$id)
                 {
                     return $this->respondCreated();
                 }
 
-                $data = $action->formModelFindOrFail($id);
+                $data = $this->formModel->findOrFail($id);
             
                 return $this->respondCreated([
                     'insertID' => $id,
@@ -60,7 +60,7 @@ class CreateAction extends BaseAction
         
             return $this->respondInvalidData([
                 'data' => $data->toArray(),
-                'validationErrors' => $action->formModelErrors(),
+                'validationErrors' => (array) $this->formModel->errors(),
                 'errors' => (array) $errors,
                 'parent' => $parent ? $parent->toArray() : null
             ]);

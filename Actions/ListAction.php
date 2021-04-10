@@ -13,24 +13,24 @@ class ListAction extends BaseAction
 
     public function _remap($method, ...$params)
     {
-        $action = $this;
-
-        return function($method) use ($action)
+        return function($method)
         {
             $parent = null;
 
-            if ($action->parentKey)
+            if ($this->parentKey)
             {
+                Assert::notEmpty($this->parentModel);
+
                 $parentId = $this->request->getGet('parentId');
 
                 Assert::notEmpty($parentId);
 
-                $parent = $action->modelFindOrFail($parentId, 'Parent not found.');
+                $parent = $this->parentModel->findOrFail($parentId, 'Parent not found.');
 
-                $this->model->where($action->parentKey, $parentId);
+                $this->model->where($this->parentKey, $parentId);
             }
 
-            $elements = $action->modelAll();
+            $elements = $this->model->all();
 
             return $this->respondOK([
                 'elements' => $elements,

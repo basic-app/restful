@@ -13,11 +13,9 @@ class ShowAction extends BaseAction
 
     public function _remap($method, ...$params)
     {
-        $action = $this;
-
-        return function($method, $id) use ($action)
+        return function($method, $id)
         {
-            $data = $action->modelFindOne($id);
+            $data = $this->model->findOne($id);
 
             if (!$data)
             {

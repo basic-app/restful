@@ -13,22 +13,20 @@ class DeleteAction extends BaseAction
 
     public function _remap($method, ...$params)
     {
-        $action = $this;
-
-        return function($method, $id) use ($action)
+        return function($method, $id)
         {
-            $data = $action->modelFindOne($id);
+            $data = $this->model->findOne($id);
 
             if (!$data)
             {
                 return $this->failNotFound();
             }
 
-            $id = $action->modelEntityPrimaryKey($data);
+            $id = $this->model->entityPrimaryKey($data);
 
             assert($id ? true : false);
 
-            $result = $action->modelDelete($id);
+            $result = $this->model->delete($id);
 
             assert($result);
 

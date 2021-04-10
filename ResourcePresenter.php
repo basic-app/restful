@@ -26,6 +26,10 @@ class ResourcePresenter extends BaseResourcePresenter
 
         // instantiate our model, if needed
         $this->setFormModel($this->formModelName);
+
+        $this->setParentModel($this->parentModelName);
+
+        $this->setSearchModel($this->searchModelName);
     }
 
     public function _remap($method, ...$params)

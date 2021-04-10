@@ -6,18 +6,18 @@
  */
 namespace BasicApp\RESTful\Actions;
 
+use Webmozart\Assert\Assert;
+
 class UpdateAction extends BaseAction
 {
 
     public function _remap($method, ...$params)
     {
-        $action = $this;
-
-        return function($method, $id) use ($action)
+        return function($method, $id)
         {
-            assert($id ? true : false);
+            Assert::notEmpty($id);
 
-            $data = $action->formModelFindOne($id);
+            $data = $this->formModel->findOne($id);
 
             if (!$data)
             {
@@ -30,11 +30,11 @@ class UpdateAction extends BaseAction
 
             $body = (array) $this->request->getJSON(true);
 
-            $data = $action->formModelFillEntity($data, $body);
+            $data = $this->formModel->fillEntity($data, $body);
 
-            if ($action->formModelSave($data->toArray(), $errors))
+            if ($this->formModel->save($data->toArray(), $errors))
             {
-                $data = $action->formModelFindOrFail($id);
+                $data = $this->formModel->findOrFail($id);
 
                 return $this->respondUpdated([
                     'data' => $data->toArray()
@@ -43,7 +43,7 @@ class UpdateAction extends BaseAction
         
             return $this->respondInvalidData([
                 'data' => $data->toArray(),
-                'validationErrors' => (array) $action->formModelErrors(),
+                'validationErrors' => (array) $this->formModel->errors(),
                 'errors' => (array) $errors
             ]);
         };
