@@ -13,7 +13,7 @@ class EditAction extends BaseAction
     {
         return function($method, $id)
         {
-            $data = $this->model->findOne($id);
+            $data = $this->formModel->findOne($id);
 
             if (!$data)
             {
