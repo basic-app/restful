@@ -21,13 +21,9 @@ class NewAction extends BaseAction
 
             if ($this->parentKey)
             {
-                Assert::notEmpty($this->parentModel, 'Parent model not found.');
+                $parent = $this->getParent();
 
-                $parentId = $this->request->getGet('parentId');
-
-                Assert::notEmpty($parentId, 'parentId not defined.');
-
-                $parent = $this->parentModel->findOrFail($parentId, 'Parent not found.');
+                $parentId = $this->parentModel->entityPrimaryKey($parent);
 
                 $data = $this->formModel->entitySetField($data, $this->parentKey, $parentId);
             }

@@ -19,13 +19,9 @@ class ListAction extends BaseAction
 
             if ($this->parentKey)
             {
-                Assert::notEmpty($this->parentModel, 'Parent model not found.');
+                $parent = $this->getParent();
 
-                $parentId = $this->request->getGet('parentId');
-
-                Assert::notEmpty($parentId);
-
-                $parent = $this->parentModel->findOrFail($parentId, 'Parent not found.');
+                $parentId = $this->parentModel->entityPrimaryKey($parent);
 
                 $this->model->where($this->parentKey, $parentId);
             }

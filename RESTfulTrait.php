@@ -7,12 +7,16 @@
  */
 namespace BasicApp\RESTful;
 
+use Webmozart\Assert\Assert;
+
 trait RESTfulTrait
 {
 
     protected $formModelName;
 
     protected $formModel;
+
+    protected $parent;
 
     protected $parentKey;
 
@@ -121,6 +125,24 @@ trait RESTfulTrait
         {
             $this->searchModelName = get_class($this->searchModel);
         }
+    }
+
+    public function getParent($refresh = false)
+    {
+        if ($this->parent && !$refresh)
+        {
+            return $this->parent;
+        }
+
+        Assert::notEmpty($this->parentModel, 'Parent model not found.');
+
+        $parentId = $this->request->getGet('parentId');
+
+        Assert::notEmpty($parentId, 'parentId not defined.');
+        
+        $this->parent = $this->parentModel->findOrFail($parentId, 'Parent not found.');
+    
+        return $this->parent;
     }
 
 }

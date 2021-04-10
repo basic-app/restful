@@ -7,6 +7,7 @@
 namespace BasicApp\RESTful\Actions;
 
 use CodeIgniter\Exceptions\PageNotFoundException;
+use Webmozart\Assert\Assert;
 
 class DeleteAction extends BaseAction
 {
@@ -24,11 +25,9 @@ class DeleteAction extends BaseAction
 
             $id = $this->model->entityPrimaryKey($data);
 
-            assert($id ? true : false);
+            Assert::notEmpty($id, 'Primary key not found.');
 
-            $result = $this->model->delete($id);
-
-            assert($result);
+            $result = $this->model->deleteOrFail($id);
 
             return $this->respondDeleted([
                 'code' => $this->codes['deleted']
