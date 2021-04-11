@@ -15,6 +15,8 @@ class NewAction extends BaseAction
     {
         return function($method)
         {    
+            Assert::notEmpty($this->formModel, 'Form model not found.');
+            
             $data = $this->formModel->createEntity($this->request->getGet());
 
             $parent = null;

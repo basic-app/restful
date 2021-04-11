@@ -6,7 +6,7 @@
  */
 namespace BasicApp\RESTful\Actions;
 
-use CodeIgniter\Exceptions\PageNotFoundException;
+use Webmozart\Assert\Assert;
 
 class ShowAction extends BaseAction
 {
@@ -15,6 +15,8 @@ class ShowAction extends BaseAction
     {
         return function($method, $id)
         {
+            Assert::notEmpty($this->model, 'Model not found.');
+
             $data = $this->model->findOne($id);
 
             if (!$data)

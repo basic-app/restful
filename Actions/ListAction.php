@@ -15,6 +15,8 @@ class ListAction extends BaseAction
     {
         return function($method)
         {
+            Assert::notEmpty($this->model, 'Model not found.');
+
             $parent = null;
 
             if ($this->parentKey)

@@ -6,6 +6,8 @@
  */
 namespace BasicApp\RESTful\Actions;
 
+use Webmozart\Assert\Assert;
+
 class EditAction extends BaseAction
 {
 
@@ -13,6 +15,8 @@ class EditAction extends BaseAction
     {
         return function($method, $id)
         {
+            Assert::notEmpty($this->formModel, 'Form model not found.');
+            
             $data = $this->formModel->findOne($id);
 
             if (!$data)

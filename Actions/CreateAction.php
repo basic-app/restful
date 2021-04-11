@@ -15,6 +15,8 @@ class CreateAction extends BaseAction
     {
         return function($method)
         {
+            Assert::notEmpty($this->formModel, 'Form model not found.');
+
             $default = $this->request->getGet();
 
             $data = $this->formModel->createEntity($default);
@@ -38,19 +40,8 @@ class CreateAction extends BaseAction
 
             if ($this->formModel->save($data->toArray(), $errors))
             {
-                $id = $this->formModel->insertID();
-
-                if (!$id)
-                {
-                    return $this->respondCreated();
-                }
-
-                $data = $this->formModel->findOrFail($id);
-            
                 return $this->respondCreated([
-                    'insertID' => $id,
-                    'data' => $data->toArray(),
-                    'parent' => $parent ? $parent->toArray() : null
+                    'insertID' => $this->formModel->insertID()
                 ]);
             }
         

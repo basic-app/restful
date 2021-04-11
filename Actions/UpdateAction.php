@@ -15,8 +15,8 @@ class UpdateAction extends BaseAction
     {
         return function($method, $id)
         {
-            Assert::notEmpty($id);
-
+            Assert::notEmpty($this->formModel, 'Form model not found.');
+            
             $data = $this->formModel->findOne($id);
 
             if (!$data)
@@ -34,11 +34,7 @@ class UpdateAction extends BaseAction
 
             if ($this->formModel->save($data->toArray(), $errors))
             {
-                $data = $this->formModel->findOrFail($id);
-
-                return $this->respondUpdated([
-                    'data' => $data->toArray()
-                ]);
+                return $this->respondUpdated();
             }
         
             return $this->respondInvalidData([
