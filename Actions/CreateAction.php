@@ -15,11 +15,18 @@ class CreateAction extends BaseAction
     {
         return function($method)
         {
-            Assert::notEmpty($this->formModel, 'Form model not found.');
+            Assert::notEmpty($this->formModelName, 'Form model name not defined.');
+
+            Assert::notEmpty($this->formModel, 'Form model not found: ' . $this->formModelName);
 
             $default = $this->request->getGet();
 
             $data = $this->formModel->createEntity($default);
+
+            if (!$this->userCanMethod($this->user, $method, $data))
+            {
+                $this->throwSecurityException('Access denied.');
+            }
 
             $validationErrors = [];
 

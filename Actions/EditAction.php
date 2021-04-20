@@ -24,6 +24,11 @@ class EditAction extends BaseAction
                 return $this->failNotFound();
             }
 
+            if (!$this->userCanMethod($this->user, $method, $data))
+            {
+                $this->throwSecurityException('Access denied.');
+            }
+
             return $this->respondOK([
                 'data' => $data->toArray()
             ]);

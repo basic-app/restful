@@ -15,7 +15,9 @@ class NewAction extends BaseAction
     {
         return function($method)
         {    
-            Assert::notEmpty($this->formModel, 'Form model not found.');
+            Assert::notEmpty($this->formModelName, 'Form model name not defined.');
+
+            Assert::notEmpty($this->formModel, 'Form model not found: ' . $this->formModelName);
             
             $data = $this->formModel->createEntity($this->request->getGet());
 
@@ -28,6 +30,11 @@ class NewAction extends BaseAction
                 $parentId = $this->parentModel->entityPrimaryKey($parent);
 
                 $data = $this->formModel->entitySetField($data, $this->parentKey, $parentId);
+            }
+
+            if (!$this->userCanMethod($this->user, $method, $data, $parent))
+            {
+                $this->throwSecurityException('Access denied.');
             }
 
             return $this->respondOK([

@@ -145,4 +145,9 @@ trait RESTfulTrait
         return $this->parent;
     }
 
+    public function userCanMethod($user, $method) : bool
+    {
+        return true;
+    }
+
 }

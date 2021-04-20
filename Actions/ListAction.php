@@ -15,7 +15,9 @@ class ListAction extends BaseAction
     {
         return function($method)
         {
-            Assert::notEmpty($this->model, 'Model not found.');
+            Assert::notEmpty($this->modelName, 'Model name not defined.');
+
+            Assert::notEmpty($this->model, 'Model not found: ' . $this->modelName);
 
             $parent = null;
 
@@ -26,6 +28,11 @@ class ListAction extends BaseAction
                 $parentId = $this->parentModel->entityPrimaryKey($parent);
 
                 $this->model->where($this->parentKey, $parentId);
+            }
+
+            if (!$this->userCanMethod($this->user, $method, $parent))
+            {
+                $this->throwSecurityException('Access denied.');
             }
 
             $elements = $this->model->all();

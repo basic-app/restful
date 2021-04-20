@@ -15,13 +15,20 @@ class UpdateAction extends BaseAction
     {
         return function($method, $id)
         {
-            Assert::notEmpty($this->formModel, 'Form model not found.');
+            Assert::notEmpty($this->formModelName, 'Form model name not defined.');
+
+            Assert::notEmpty($this->formModel, 'Form model not found: ' . $this->formModelName);
             
             $data = $this->formModel->findOne($id);
 
             if (!$data)
             {
                 return $this->failNotFound();
+            }
+
+            if (!$this->userCanMethod($this->user, $method, $data))
+            {
+                $this->throwSecurityException('Access denied.');
             }
 
             $validationErrors = [];
