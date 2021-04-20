@@ -145,7 +145,7 @@ trait RESTfulTrait
         return $this->parent;
     }
 
-    public function userCanMethod($user, $method) : bool
+    public function userCanMethod($user, $method, $entity, &$error = null) : bool
     {
         return true;
     }
