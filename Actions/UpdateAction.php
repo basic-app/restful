@@ -39,7 +39,7 @@ class UpdateAction extends BaseAction
 
             $data = $this->formModel->fillEntity($data, $body);
 
-            if ($this->formModel->save($data->toArray(), $errors))
+            if ($this->formModel->save($data, $errors))
             {
                 return $this->respondUpdated();
             }

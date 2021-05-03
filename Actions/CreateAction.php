@@ -32,7 +32,9 @@ class CreateAction extends BaseAction
 
             $errors = [];
 
-            $data = $this->formModel->fillEntity($data, (array) $this->request->getJSON(true));
+            $body = (array) $this->request->getJSON(true);
+
+            $data = $this->formModel->fillEntity($data, $body);
 
             $parent = null;
 
@@ -45,7 +47,7 @@ class CreateAction extends BaseAction
                 $data = $this->formModel->entitySetField($data, $this->parentKey, $parentId);
             }
 
-            if ($this->formModel->save($data->toArray(), $errors))
+            if ($this->formModel->save($data, $errors))
             {
                 return $this->respondCreated([
                     'insertID' => $this->formModel->insertID()
