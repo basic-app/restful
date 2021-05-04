@@ -34,13 +34,19 @@ class NewAction extends BaseAction
 
             if (!$this->userCanMethod($this->user, $method, $data, $parent))
             {
-                $this->throwSecurityException('Access denied.');
+                $this->throwSecurityException(lang('Access denied.'));
             }
 
-            return $this->respondOK([
-                'data' => $data->toArray(),
-                'parent' => $parent ? $parent->toArray() : null
-            ]);
+            $result = [
+                'data' => $data
+            ];
+
+            if ($parent)
+            {
+                $result['parent'] = $parent;
+            }
+
+            return $this->respondOK($result);
         };
     }
 

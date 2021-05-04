@@ -32,15 +32,19 @@ class ListAction extends BaseAction
 
             if (!$this->userCanMethod($this->user, $method, $parent))
             {
-                $this->throwSecurityException('Access denied.');
+                $this->throwSecurityException(lang('Access denied.'));
             }
 
-            $elements = $this->model->all();
+            $result = [
+                'elements' => $this->model->all()
+            ];
 
-            return $this->respondOK([
-                'elements' => $elements,
-                'parent' => $parent ? $parent->toArray() : null
-            ]);
+            if ($parent)
+            {
+                $result['parent'] = $parent;
+            }
+
+            return $this->respondOK($result);
         };
     }
 

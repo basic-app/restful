@@ -28,7 +28,7 @@ class DeleteAction extends BaseAction
 
             if (!$this->userCanMethod($this->user, $method, $data))
             {
-                $this->throwSecurityException('Access denied.');
+                $this->throwSecurityException(lang('Access denied.'));
             }
             
             $this->model->deleteEntity($data);

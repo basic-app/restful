@@ -28,7 +28,7 @@ class UpdateAction extends BaseAction
 
             if (!$this->userCanMethod($this->user, $method, $data))
             {
-                $this->throwSecurityException('Access denied.');
+                $this->throwSecurityException(lang('Access denied.'));
             }
 
             $validationErrors = [];
@@ -43,12 +43,14 @@ class UpdateAction extends BaseAction
             {
                 return $this->respondUpdated();
             }
-        
-            return $this->respondInvalidData([
-                'data' => $data->toArray(),
+
+            $result = [
+                'data' => $data,
                 'validationErrors' => (array) $this->formModel->errors(),
                 'errors' => (array) $errors
-            ]);
+            ];
+        
+            return $this->respondInvalidData($result);
         };
     }
 

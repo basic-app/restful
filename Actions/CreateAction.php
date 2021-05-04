@@ -25,7 +25,7 @@ class CreateAction extends BaseAction
 
             if (!$this->userCanMethod($this->user, $method, $data))
             {
-                $this->throwSecurityException('Access denied.');
+                $this->throwSecurityException(lang('Access denied.'));
             }
 
             $validationErrors = [];
@@ -53,13 +53,19 @@ class CreateAction extends BaseAction
                     'insertID' => $this->formModel->insertID()
                 ]);
             }
-        
-            return $this->respondInvalidData([
-                'data' => $data->toArray(),
+
+            $result = [
+                'data' => $data,
                 'validationErrors' => (array) $this->formModel->errors(),
-                'errors' => (array) $errors,
-                'parent' => $parent ? $parent->toArray() : null
-            ]);
+                'errors' => (array) $errors
+            ];
+
+            if ($parent)
+            {
+                $result['parent'] = $parent;
+            }
+        
+            return $this->respondInvalidData($result);
         };
     }
 
