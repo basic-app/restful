@@ -14,9 +14,11 @@ class EditAction extends BaseAction
     public function _remap($method, ...$params)
     {
         return function($method, $id)
-        {
-            Assert::notEmpty($this->formModel, 'Form model not found.');
-            
+        {   
+            Assert::notEmpty($this->formModelName, 'Form model name not defined.');
+
+            Assert::notEmpty($this->formModel, 'Form model not found: ' . $this->formModelName);
+
             $data = $this->formModel->findOne($id);
 
             if (!$data)
