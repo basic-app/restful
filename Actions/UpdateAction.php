@@ -35,9 +35,7 @@ class UpdateAction extends BaseAction
 
             $errors = [];
 
-            $body = (array) $this->request->getJSON(true);
-
-            $data = $this->formModel->fillEntity($data, $body);
+            $data->fill($this->request->getJSON(true), true);
 
             if ($this->formModel->save($data, $errors))
             {

@@ -19,9 +19,20 @@ class CreateAction extends BaseAction
 
             Assert::notEmpty($this->formModel, 'Form model not found: ' . $this->formModelName);
 
-            $default = $this->request->getGet();
+            $defaults = [];
 
-            $data = $this->formModel->createEntity($default);
+            $parent = null;
+
+            if ($this->parentKey)
+            {
+                $parent = $this->getParent();
+
+                $parentId = $this->parentModel->entityPrimaryKey($parent);
+            
+                $defaults[$this->parentKey] = $parentId;
+            }
+
+            $data = $this->formModel->createEntity($defaults);
 
             if (!$this->userCanMethod($this->user, $method, $data))
             {
@@ -32,20 +43,9 @@ class CreateAction extends BaseAction
 
             $errors = [];
 
-            $body = (array) $this->request->getJSON(true);
+            $data->fill($this->request->getGet(), true);
 
-            $data = $this->formModel->fillEntity($data, $body);
-
-            $parent = null;
-
-            if ($this->parentKey)
-            {
-                $parent = $this->getParent();
-
-                $parentId = $this->parentModel->entityPrimaryKey($parent);
-
-                $data = $this->formModel->entitySetField($data, $this->parentKey, $parentId);
-            }
+            $data->fill($this->request->getJSON(true), true);
 
             if ($this->formModel->save($data, $errors))
             {

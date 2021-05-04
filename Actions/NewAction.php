@@ -19,7 +19,7 @@ class NewAction extends BaseAction
 
             Assert::notEmpty($this->formModel, 'Form model not found: ' . $this->formModelName);
             
-            $data = $this->formModel->createEntity($this->request->getGet());
+            $defaults = [];
 
             $parent = null;
 
@@ -28,9 +28,13 @@ class NewAction extends BaseAction
                 $parent = $this->getParent();
 
                 $parentId = $this->parentModel->entityPrimaryKey($parent);
-
-                $data = $this->formModel->entitySetField($data, $this->parentKey, $parentId);
+            
+                $defaults[$this->parentKey] = $parentId;
             }
+
+            $data = $this->formModel->createEntity($defaults);
+
+            $data->fill($this->request->getGet(), true);
 
             if (!$this->userCanMethod($this->user, $method, $data, $parent))
             {
