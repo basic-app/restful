@@ -50,7 +50,7 @@ class CreateAction extends BaseAction
             if ($this->formModel->save($data, $errors))
             {
                 return $this->respondCreated([
-                    'insertID' => $this->formModel->insertID()
+                    'insertID' => $this->formModel->insertID
                 ]);
             }
 
