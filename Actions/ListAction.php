@@ -35,9 +35,24 @@ class ListAction extends BaseAction
                 $this->throwSecurityException(lang('Access denied.'));
             }
 
-            $result = [
-                'elements' => $this->model->all()
-            ];
+            $result = [];
+
+            if ($this->perPage)
+            {    
+                $result['elements'] = $this->model->paginate((int) $this->perPage);
+
+                $result['currentPage'] = $this->model->pager->getCurrentPage();
+
+                $result['perPage'] = $this->model->pager->getPerPage();
+
+                $result['pageCount'] = $this->model->pager->getPageCount();
+
+                $result['total'] = $this->model->pager->getTotal();
+            }
+            else
+            {
+                $result['elements'] = $this->model->all();
+            }
 
             if ($parent)
             {

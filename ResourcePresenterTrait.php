@@ -11,6 +11,8 @@ trait ResourcePresenterTrait
 
     protected $viewsNamespace;
 
+    protected $perPage = 25;
+
     protected function getViewsNamespace() : ?string
     {
         return $this->viewsNamespace;
