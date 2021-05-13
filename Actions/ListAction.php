@@ -37,6 +37,34 @@ class ListAction extends BaseAction
 
             $result = [];
 
+            if ($parent)
+            {
+                $result['parent'] = $parent;
+            }
+
+            $errors = [];
+
+            $validationErrors = [];
+
+            if ($this->searchModelName)
+            {
+                Assert::notEmpty($this->searchModel, 'Search model not found: ' . $this->searchModelName);
+
+                $search = $this->searchModel->createData($this->request->getGet());
+
+                if ($this->searchModel->validate($search, $errors))
+                {
+                    $this->searchModel->applyToQuery($search, $this->model);
+                }
+                else
+                {
+                    return $this->respondValidationErrors([
+                        'errors' => (array) $errors,
+                        'validationErrors' => (array) $this->searchModel->errors()
+                    ]);
+                }
+            }
+
             if ($this->perPage)
             {    
                 $result['elements'] = $this->model->paginate((int) $this->perPage);
@@ -52,11 +80,6 @@ class ListAction extends BaseAction
             else
             {
                 $result['elements'] = $this->model->all();
-            }
-
-            if ($parent)
-            {
-                $result['parent'] = $parent;
             }
 
             return $this->respondOK($result);

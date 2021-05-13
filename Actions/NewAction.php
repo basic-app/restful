@@ -32,7 +32,7 @@ class NewAction extends BaseAction
                 $defaults[$this->parentKey] = $parentId;
             }
 
-            $data = $this->formModel->createEntity($defaults);
+            $data = $this->formModel->createData($defaults);
 
             $data->fill($this->request->getGet(), true);
 

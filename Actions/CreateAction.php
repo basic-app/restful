@@ -32,7 +32,7 @@ class CreateAction extends BaseAction
                 $defaults[$this->parentKey] = $parentId;
             }
 
-            $data = $this->formModel->createEntity($defaults);
+            $data = $this->formModel->createData($defaults);
 
             if (!$this->userCanMethod($this->user, $method, $data))
             {
