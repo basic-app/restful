@@ -31,7 +31,7 @@ class DeleteAction extends BaseAction
                 $this->throwSecurityException(lang('Access denied.'));
             }
             
-            $this->model->deleteEntity($data);
+            $this->model->deleteData($data);
 
             return $this->respondDeleted();
         };
