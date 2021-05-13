@@ -28,6 +28,10 @@ trait RESTfulTrait
 
     protected $searchModel;
 
+    protected $perPage;
+
+    protected $perPageItems;
+
     /**
      * Set or change the model this controller is bound to.
      * Given either the name or the object, determine the other.

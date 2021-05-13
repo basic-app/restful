@@ -7,6 +7,8 @@
 namespace BasicApp\RESTful\Actions;
 
 use Webmozart\Assert\Assert;
+use Exception;
+use Config\Services;
 
 class ListAction extends BaseAction
 {
@@ -68,8 +70,31 @@ class ListAction extends BaseAction
             }
 
             if ($this->perPage)
-            {    
-                $result['elements'] = $this->model->paginate((int) $this->perPage);
+            {
+                $perPage = (int) $this->request->getGet('perPage');
+
+                if (!$perPage)
+                {
+                    $perPage = $this->perPage;
+                }
+
+                if ($this->perPageItems)
+                {
+                    $validation = Services::validation();
+
+                    if (!$validation->check($perPage, 'in_list[' . implode(', ', $this->perPageItems) . ']'))
+                    {
+                        $errors = $validation->getErrors('check');
+
+                        $error = $errors['check'];
+
+                        $error = str_replace('check', 'perPage', $error);
+
+                        throw new Exception($error);
+                    }
+                }
+
+                $result['elements'] = $this->model->paginate($perPage);
 
                 $result['currentPage'] = $this->model->pager->getCurrentPage();
 

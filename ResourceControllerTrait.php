@@ -9,8 +9,6 @@ namespace BasicApp\RESTful;
 trait ResourceControllerTrait
 {
 
-    protected $perPage = 25;
-
     public function prepareResponse(array $data) : array
     {
         return $data;
