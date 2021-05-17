@@ -138,7 +138,9 @@ trait RESTfulTrait
             return $this->parent;
         }
 
-        Assert::notEmpty($this->parentModel, 'Parent model not found.');
+        Assert::notEmpty($this->parentModelName, 'Parent model name not defined.');
+
+        Assert::notEmpty($this->parentModel, 'Parent model not found: ' . $this->parentModelName);
 
         $parentId = $this->request->getGet('parentId');
 
