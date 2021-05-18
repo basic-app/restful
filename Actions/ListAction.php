@@ -56,8 +56,8 @@ class ListAction extends BaseAction
 
                 if ($this->searchModel->validate($search, $errors))
                 {
-                    $this->searchModel->applyToQuery($search, $this->model);
-                
+                    $search->applyToQuery($this->model);
+
                     $result['search'] = $search->toArray();
                 }
                 else
