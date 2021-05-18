@@ -12,7 +12,6 @@ use Psr\Log\LoggerInterface;
 
 class ResourcePresenter extends BaseResourcePresenter
 {
-
     /**
      * Constructor.
      *
@@ -24,8 +23,9 @@ class ResourcePresenter extends BaseResourcePresenter
     {
         parent::initController($request, $response, $logger);
 
-        // instantiate our model, if needed
-        $this->setFormModel($this->formModelName);
+        $this->setCreateModel($this->createModelName);
+
+        $this->setUpdateModel($this->updateModelName);
 
         $this->setParentModel($this->parentModelName);
 

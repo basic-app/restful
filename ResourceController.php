@@ -37,8 +37,9 @@ class ResourceController extends BaseResourceController
     {
         parent::initController($request, $response, $logger);
 
-        // instantiate our model, if needed
-        $this->setFormModel($this->formModelName);
+        $this->setCreateModel($this->createModelName);
+
+        $this->setUpdateModel($this->updateModelName);
 
         $this->setParentModel($this->parentModelName);
 

@@ -12,9 +12,13 @@ use Webmozart\Assert\Assert;
 trait RESTfulTrait
 {
 
-    protected $formModelName;
+    protected $createModelName;
 
-    protected $formModel;
+    protected $createModel;
+
+    protected $updateModelName;
+
+    protected $updateModel;
 
     protected $parent;
 
@@ -40,28 +44,61 @@ trait RESTfulTrait
      *
      * @return void
      */
-    public function setFormModel($which = null)
+    public function setCreateModel($which = null)
     {
         // save what we have been given
         if ($which)
         {
-            $this->formModel = is_object($which) ? $which : null;
-            $this->formModelName = is_object($which) ? null : $which;
+            $this->createModel = is_object($which) ? $which : null;
+            $this->createModelName = is_object($which) ? null : $which;
         }
 
         // make a model object if needed
-        if (empty($this->formModel) && ! empty($this->formModelName))
+        if (empty($this->createModel) && ! empty($this->createModelName))
         {
-            if (class_exists($this->formModelName))
+            if (class_exists($this->createModelName))
             {
-                $this->formModel = model($this->formModelName);
+                $this->createModel = model($this->createModelName);
             }
         }
 
         // determine model name if needed
-        if (! empty($this->formModel) && empty($this->formModelName))
+        if (! empty($this->createModel) && empty($this->createModelName))
         {
-            $this->formModelName = get_class($this->formModel);
+            $this->createModelName = get_class($this->createModel);
+        }
+    }
+
+    /**
+     * Set or change the model this controller is bound to.
+     * Given either the name or the object, determine the other.
+     *
+     * @param object|string|null $which
+     *
+     * @return void
+     */
+    public function setUpdateModel($which = null)
+    {
+        // save what we have been given
+        if ($which)
+        {
+            $this->updateModel = is_object($which) ? $which : null;
+            $this->updateModelName = is_object($which) ? null : $which;
+        }
+
+        // make a model object if needed
+        if (empty($this->updateModel) && ! empty($this->updateModelName))
+        {
+            if (class_exists($this->updateModelName))
+            {
+                $this->updateModel = model($this->updateModelName);
+            }
+        }
+
+        // determine model name if needed
+        if (! empty($this->updateModel) && empty($this->updateModelName))
+        {
+            $this->updateModelName = get_class($this->updateModel);
         }
     }
 

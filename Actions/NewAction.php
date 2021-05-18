@@ -15,9 +15,9 @@ class NewAction extends BaseAction
     {
         return function($method)
         {    
-            Assert::notEmpty($this->formModelName, 'Form model name not defined.');
+            Assert::notEmpty($this->createModelName, 'Create model name not defined.');
 
-            Assert::notEmpty($this->formModel, 'Form model not found: ' . $this->formModelName);
+            Assert::notEmpty($this->createModel, 'Create model not found: ' . $this->createModelName);
             
             $defaults = [];
 
@@ -32,7 +32,7 @@ class NewAction extends BaseAction
                 $defaults[$this->parentKey] = $parentId;
             }
 
-            $data = $this->formModel->createData($defaults);
+            $data = $this->createModel->createData($defaults);
 
             $data->fill($this->request->getGet(), true);
 

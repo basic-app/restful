@@ -15,11 +15,11 @@ class EditAction extends BaseAction
     {
         return function($method, $id)
         {   
-            Assert::notEmpty($this->formModelName, 'Form model name not defined.');
+            Assert::notEmpty($this->updateModelName, 'Update model name not defined.');
 
-            Assert::notEmpty($this->formModel, 'Form model not found: ' . $this->formModelName);
+            Assert::notEmpty($this->updateModel, 'Update model not found: ' . $this->updateModelName);
 
-            $data = $this->formModel->findOne($id);
+            $data = $this->updateModel->findOne($id);
 
             if (!$data)
             {

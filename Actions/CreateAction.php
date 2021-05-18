@@ -15,9 +15,9 @@ class CreateAction extends BaseAction
     {
         return function($method)
         {
-            Assert::notEmpty($this->formModelName, 'Form model name not defined.');
+            Assert::notEmpty($this->createModelName, 'Create model name not defined.');
 
-            Assert::notEmpty($this->formModel, 'Form model not found: ' . $this->formModelName);
+            Assert::notEmpty($this->createModel, 'Create model not found: ' . $this->createModelName);
 
             $defaults = [];
 
@@ -32,7 +32,7 @@ class CreateAction extends BaseAction
                 $defaults[$this->parentKey] = $parentId;
             }
 
-            $data = $this->formModel->createData($defaults);
+            $data = $this->createModel->createData($defaults);
 
             if (!$this->userCanMethod($this->user, $method, $data))
             {
@@ -47,16 +47,16 @@ class CreateAction extends BaseAction
 
             $data->fill($this->request->getJSON(true), true);
 
-            if ($this->formModel->save($data, $errors))
+            if ($this->createModel->save($data, $errors))
             {
                 return $this->respondCreated([
-                    'insertID' => $this->formModel->insertID
+                    'insertID' => $this->createModel->insertID
                 ]);
             }
 
             $result = [
                 'data' => $data,
-                'validationErrors' => (array) $this->formModel->errors(),
+                'validationErrors' => (array) $this->createModel->errors(),
                 'errors' => (array) $errors
             ];
 

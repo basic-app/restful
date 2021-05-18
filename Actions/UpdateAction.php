@@ -15,11 +15,11 @@ class UpdateAction extends BaseAction
     {
         return function($method, $id)
         {
-            Assert::notEmpty($this->formModelName, 'Form model name not defined.');
+            Assert::notEmpty($this->updateModelName, 'Update model name not defined.');
 
-            Assert::notEmpty($this->formModel, 'Form model not found: ' . $this->formModelName);
+            Assert::notEmpty($this->updateModel, 'Update model not found: ' . $this->updateModelName);
             
-            $data = $this->formModel->findOne($id);
+            $data = $this->updateModel->findOne($id);
 
             if (!$data)
             {
@@ -37,14 +37,14 @@ class UpdateAction extends BaseAction
 
             $data->fill($this->request->getJSON(true), true);
 
-            if ($this->formModel->save($data, $errors))
+            if ($this->updateModel->save($data, $errors))
             {
                 return $this->respondUpdated();
             }
 
             $result = [
                 'data' => $data,
-                'validationErrors' => (array) $this->formModel->errors(),
+                'validationErrors' => (array) $this->updateModel->errors(),
                 'errors' => (array) $errors
             ];
         
