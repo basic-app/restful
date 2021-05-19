@@ -106,7 +106,7 @@ class ListAction extends BaseAction
             }
             else
             {
-                $result['elements'] = $this->model->all();
+                $result['elements'] = $this->model->findAll();
             }
 
             return $this->respondOK($result);
