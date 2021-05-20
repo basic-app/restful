@@ -34,7 +34,7 @@ class NewAction extends BaseAction
 
             $data = $this->createModel->createData($defaults);
 
-            $data->fill($this->request->getGet(), true);
+            $data->fill($this->request->getGet());
 
             if (!$this->userCanMethod($this->user, $method, $data, $parent))
             {
