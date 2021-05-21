@@ -43,9 +43,7 @@ class CreateAction extends BaseAction
 
             $errors = [];
 
-            $data->fill($this->request->getGet(), true);
-
-            $data->fill($this->request->getJSON(true), true);
+            $data->fill(array_merge($this->request->getGet(), $this->request->getJSON(true)), true);
 
             if ($this->createModel->save($data, $errors))
             {
