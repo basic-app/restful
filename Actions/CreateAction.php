@@ -7,6 +7,7 @@
 namespace BasicApp\RESTful\Actions;
 
 use Webmozart\Assert\Assert;
+use BasicApp\ActiveEntity\ActiveEntityInterface;
 
 class CreateAction extends BaseAction
 {
@@ -45,7 +46,16 @@ class CreateAction extends BaseAction
 
             $data->fill(array_merge($this->request->getGet(), $this->request->getJSON(true)), true);
 
-            if ($this->createModel->save($data, $errors))
+            if ($data instanceof ActiveEntityInterface)
+            {
+                $saved = $data->save($errors);
+            }
+            else
+            {
+                $saved = $this->createModel->save($data, $errors);
+            }
+
+            if ($saved)
             {
                 return $this->respondCreated([
                     'insertID' => $this->createModel->insertID

@@ -7,6 +7,7 @@
 namespace BasicApp\RESTful\Actions;
 
 use Webmozart\Assert\Assert;
+use BasicApp\ActiveEntity\ActiveEntityInterface;
 
 class UpdateAction extends BaseAction
 {
@@ -37,7 +38,16 @@ class UpdateAction extends BaseAction
 
             $data->fill($this->request->getJSON(true), true);
 
-            if ($this->updateModel->save($data, $errors))
+            if ($data instanceof ActiveEntityInterface)
+            {
+                $saved = $data->save($errors); 
+            }
+            else
+            {
+                $saved = $this->updateModel->save($data, $errors);
+            }
+
+            if ($saved)
             {
                 return $this->respondUpdated();
             }

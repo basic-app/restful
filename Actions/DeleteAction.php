@@ -7,6 +7,7 @@
 namespace BasicApp\RESTful\Actions;
 
 use Webmozart\Assert\Assert;
+use BasicApp\ActiveEntity\ActiveEntityInterface;
 
 class DeleteAction extends BaseAction
 {
@@ -30,9 +31,16 @@ class DeleteAction extends BaseAction
             {
                 $this->throwSecurityException(lang('Access denied.'));
             }
-            
-            $this->model->deleteData($data);
 
+            if ($data instanceof ActiveEntityInterface)
+            {
+                $data->delete();
+            }
+            else
+            {
+                $this->model->deleteData($data);
+            }
+            
             return $this->respondDeleted();
         };
     }
