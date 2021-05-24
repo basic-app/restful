@@ -94,7 +94,7 @@ class ListAction extends BaseAction
                     }
                 }
 
-                $result['elements'] = $this->model->paginate($perPage);
+                $result['elements'] = $this->model->prepareBuilder()->paginate($perPage);
 
                 $result['currentPage'] = $this->model->pager->getCurrentPage();
 
@@ -106,7 +106,7 @@ class ListAction extends BaseAction
             }
             else
             {
-                $result['elements'] = $this->model->findAll();
+                $result['elements'] = $this->model->prepareBuilder()->findAll();
             }
 
             return $this->respondOK($result);

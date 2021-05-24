@@ -19,7 +19,7 @@ class ShowAction extends BaseAction
 
             Assert::notEmpty($this->model, 'Model not found: ' . $this->modelName);
 
-            $data = $this->model->findOne($id);
+            $data = $this->model->prepareBuilder()->findOne($id);
 
             if (!$data)
             {
