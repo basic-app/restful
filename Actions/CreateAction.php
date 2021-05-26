@@ -44,7 +44,7 @@ class CreateAction extends BaseAction
 
             $errors = [];
 
-            $data->fill(array_merge($this->request->getGet(), $this->request->getJSON(true)), true);
+            $data->fill(array_merge($this->request->getGet(), (array) $this->request->getJSON(true)), true);
 
             if ($data instanceof ActiveEntityInterface)
             {
