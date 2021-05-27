@@ -19,20 +19,20 @@ class ShowAction extends BaseAction
 
             Assert::notEmpty($this->model, 'Model not found: ' . $this->modelName);
 
-            $data = $this->model->prepareBuilder()->findOne($id);
+            $this->data = $this->model->prepareBuilder()->findOne($id);
 
-            if (!$data)
+            if (!$this->data)
             {
                 return $this->failNotFound();
             }
 
-            if (!$this->userCanMethod($this->user, $method, $data))
+            if (!$this->userCanMethod($this->user, $method, $error))
             {
-                $this->throwSecurityException(lang('Access denied.'));
+                $this->throwSecurityException($error ?? lang('Access denied.'));
             }
 
             $result = [
-                'data' => $data
+                'data' => $this->data
             ];
 
             return $this->respondOK($result);

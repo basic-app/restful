@@ -21,34 +21,34 @@ class NewAction extends BaseAction
             
             $defaults = [];
 
-            $parent = null;
-
             if ($this->parentKey)
             {
-                $parent = $this->getParent();
+                $this->parentData = $this->getParent();
 
-                $parentId = $this->parentModel->entityPrimaryKey($parent);
+                $parentId = $this->parentModel->getIdValue($this->parentData);
             
                 $defaults[$this->parentKey] = $parentId;
             }
 
-            $data = $this->createModel->createData($defaults);
+            $this->data = $this->createModel->createData($defaults);
 
-            $data->fill($this->request->getGet(), true);
+            $this->data->fill($this->request->getGet(), true);
 
-            if (!$this->userCanMethod($this->user, $method, $data, $parent))
+            if (!$this->userCanMethod($this->user, $method, $error))
             {
-                $this->throwSecurityException(lang('Access denied.'));
+                $this->throwSecurityException($error ?? lang('Access denied.'));
             }
 
             $result = [
-                'data' => $data
+                'data' => $this->data
             ];
 
+            /*
             if ($parent)
             {
-                $result['parent'] = $parent;
+                $result['parentData'] = $this->parentData;
             }
+            */
 
             return $this->respondOK($result);
         };

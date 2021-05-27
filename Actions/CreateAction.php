@@ -33,45 +33,65 @@ class CreateAction extends BaseAction
                 $defaults[$this->parentKey] = $parentId;
             }
 
-            $data = $this->createModel->createData($defaults);
+            $this->data = $this->createModel->createData($defaults);
 
-            if (!$this->userCanMethod($this->user, $method, $data))
+            if (!$this->userCanMethod($this->user, $method, $error))
             {
-                $this->throwSecurityException(lang('Access denied.'));
+                $this->throwSecurityException($error ?? lang('Access denied.'));
             }
 
             $validationErrors = [];
 
             $errors = [];
 
-            $data->fill(array_merge($this->request->getGet(), (array) $this->request->getJSON(true)), true);
+            $this->data->fill(array_merge($this->request->getGet(), (array) $this->request->getJSON(true)), true);
 
-            if ($data instanceof ActiveEntityInterface)
+            $insertID = null;
+
+            if ($this->data instanceof ActiveEntityInterface)
             {
-                $saved = $data->save($errors);
+                $saved = $this->data->save($errors);
+
+                if ($saved)
+                {
+                    $insertID = $this->data->getInsertID();
+                }
+
+                $validationErrors = $this->data->errors();
             }
             else
             {
-                $saved = $this->createModel->save($data, $errors);
+                $saved = $this->createModel->save($this->data, $errors);
+
+                if ($saved)
+                {
+                    $insertID = $this->createModel->getInsertID();
+                }
+
+                $validationErrors = $this->createModel->errors();
             }
 
             if ($saved)
             {
                 return $this->respondCreated([
-                    'insertID' => $this->createModel->insertID
+                    'insertID' => $insertID
                 ]);
             }
 
             $result = [
-                'data' => $data,
-                'validationErrors' => (array) $this->createModel->errors(),
+                'data' => $this->data,
+                'validationErrors' => (array) $validationErrors,
                 'errors' => (array) $errors
             ];
+
+            /*
 
             if ($parent)
             {
                 $result['parent'] = $parent;
             }
+
+            */
         
             return $this->respondInvalidData($result);
         };

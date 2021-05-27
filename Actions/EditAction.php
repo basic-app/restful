@@ -19,20 +19,20 @@ class EditAction extends BaseAction
 
             Assert::notEmpty($this->updateModel, 'Update model not found: ' . $this->updateModelName);
 
-            $data = $this->updateModel->findOne($id);
+            $this->data = $this->updateModel->findOne($id);
 
-            if (!$data)
+            if (!$this->data)
             {
                 return $this->failNotFound();
             }
 
-            if (!$this->userCanMethod($this->user, $method, $data))
+            if (!$this->userCanMethod($this->user, $method, $error))
             {
-                $this->throwSecurityException(lang('Access denied.'));
+                $this->throwSecurityException($error ?? lang('Access denied.'));
             }
 
             $result = [
-                'data' => $data
+                'data' => $this->data
             ];
 
             return $this->respondOK($result);

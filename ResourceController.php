@@ -37,13 +37,7 @@ class ResourceController extends BaseResourceController
     {
         parent::initController($request, $response, $logger);
 
-        $this->setCreateModel($this->createModelName);
-
-        $this->setUpdateModel($this->updateModelName);
-
-        $this->setParentModel($this->parentModelName);
-
-        $this->setSearchModel($this->searchModelName);
+        $this->initModels();
     }
     
     public function _remap($method, ...$params)

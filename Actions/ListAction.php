@@ -39,10 +39,12 @@ class ListAction extends BaseAction
 
             $result = [];
 
+            /*
             if ($parent)
             {
                 $result['parent'] = $parent;
             }
+            */
 
             $errors = [];
 
