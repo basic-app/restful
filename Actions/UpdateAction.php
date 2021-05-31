@@ -41,10 +41,14 @@ class UpdateAction extends BaseAction
             if ($this->data instanceof ActiveEntityInterface)
             {
                 $saved = $this->data->save($errors); 
+
+                $validationErrors = $this->data->errors();
             }
             else
             {
                 $saved = $this->updateModel->save($this->data, $errors);
+            
+                $validationErrors = $this->updateModel->errors();
             }
 
             if ($saved)
@@ -54,7 +58,7 @@ class UpdateAction extends BaseAction
 
             $result = [
                 'data' => $this->data,
-                'validationErrors' => (array) $this->updateModel->errors(),
+                'validationErrors' => (array) $validationErrors,
                 'errors' => (array) $errors
             ];
         
