@@ -59,8 +59,6 @@ class ListAction extends BaseAction
                 if ($this->searchModel->validate($search, $errors))
                 {
                     $search->applyToQuery($this->model);
-
-                    $result['search'] = $search->toArray();
                 }
                 else
                 {
@@ -69,6 +67,8 @@ class ListAction extends BaseAction
                         'validationErrors' => (array) $this->searchModel->errors()
                     ]);
                 }
+
+                $result['search'] = $search->toArray();
             }
 
             if ($this->perPage)
