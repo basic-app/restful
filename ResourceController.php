@@ -14,15 +14,18 @@ use BasicApp\Action\ActionInterface;
 class ResourceController extends BaseResourceController
 {
 
+    use Traits\MassEditTrait;
+    use Traits\MassUpdateTrait;
+
     protected $format = 'json';
 
     protected $defaultActions = [
         'index' => 'BasicApp\RESTful\Actions\ListAction',
         'new' => 'BasicApp\RESTful\Actions\NewAction',
         'create' => 'BasicApp\RESTful\Actions\CreateAction',
-        'show' => 'BasicApp\RESTful\Actions\ShowAction',
-        'update' => 'BasicApp\RESTful\Actions\UpdateAction',
         'edit' => 'BasicApp\RESTful\Actions\EditAction',
+        'update' => 'BasicApp\RESTful\Actions\UpdateAction',
+        'show' => 'BasicApp\RESTful\Actions\ShowAction',
         'delete' => 'BasicApp\RESTful\Actions\DeleteAction'
     ];
 

@@ -12,7 +12,7 @@ use BasicApp\ActiveEntity\ActiveEntityInterface;
 class CreateAction extends BaseAction
 {
 
-    public function _remap($method, ...$params)
+    public function run($method, ...$params)
     {
         return function($method)
         {
@@ -44,7 +44,7 @@ class CreateAction extends BaseAction
 
             $errors = [];
 
-            $this->data->fill(array_merge($this->request->getGet(), (array) $this->request->getJSON(true)), true);
+            $this->data->fill(array_merge($this->request->getGet(), (array) $this->request->getJSON(true)));
 
             $insertID = null;
 

@@ -13,7 +13,7 @@ use Config\Services;
 class ListAction extends BaseAction
 {
 
-    public function _remap($method, ...$params)
+    public function run($method, ...$params)
     {
         return function($method)
         {

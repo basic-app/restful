@@ -12,7 +12,7 @@ use BasicApp\ActiveEntity\ActiveEntityInterface;
 class UpdateAction extends BaseAction
 {
 
-    public function _remap($method, ...$params)
+    public function run($method, ...$params)
     {
         return function($method, $id)
         {
@@ -36,7 +36,7 @@ class UpdateAction extends BaseAction
 
             $errors = [];
 
-            $this->data->fill($this->request->getJSON(true), true);
+            $this->data->fill($this->request->getJSON(true));
 
             if ($this->data instanceof ActiveEntityInterface)
             {

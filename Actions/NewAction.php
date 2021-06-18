@@ -11,7 +11,7 @@ use Webmozart\Assert\Assert;
 class NewAction extends BaseAction
 {
 
-    public function _remap($method, ...$params)
+    public function run($method, ...$params)
     {
         return function($method)
         {    
@@ -32,7 +32,7 @@ class NewAction extends BaseAction
 
             $this->data = $this->createModel->createData($defaults);
 
-            $this->data->fill($this->request->getGet(), true);
+            $this->data->fill($this->request->getGet());
 
             if (!$this->userCanMethod($this->user, $method, $error))
             {
