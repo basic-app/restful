@@ -24,6 +24,8 @@ class ResourcePresenter extends BaseResourcePresenter
         parent::initController($request, $response, $logger);
 
         $this->initModels();
+
+        $this->initialize();
     }
 
     public function _remap($method, ...$params)
@@ -34,6 +36,10 @@ class ResourcePresenter extends BaseResourcePresenter
         }
 
         return $this->remapAction($method, ...$params);
+    }
+
+    protected function initialize()
+    {
     }
     
 }

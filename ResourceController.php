@@ -41,6 +41,8 @@ class ResourceController extends BaseResourceController
         parent::initController($request, $response, $logger);
 
         $this->initModels();
+
+        $this->initialize();
     }
     
     public function _remap($method, ...$params)
@@ -139,6 +141,10 @@ class ResourceController extends BaseResourceController
         }
 
         return parent::createAction($className, $params);
+    }
+
+    protected function initialize()
+    {
     }
 
 }
