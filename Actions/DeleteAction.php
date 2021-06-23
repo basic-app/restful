@@ -9,7 +9,7 @@ namespace BasicApp\RESTful\Actions;
 use Webmozart\Assert\Assert;
 use BasicApp\Entity\ActiveEntityInterface;
 
-class DeleteAction extends \BasicApp\Action\BaseAction
+class DeleteAction extends \BasicApp\Action\Action
 {
 
     public $modelName;
@@ -26,7 +26,7 @@ class DeleteAction extends \BasicApp\Action\BaseAction
 
             Assert::notEmpty($model, 'Model not found: ' . $modelName);
 
-            $data = $this->model->findOne($id);
+            $data = $model->findOne($id);
 
             if (!$data)
             {
@@ -44,7 +44,7 @@ class DeleteAction extends \BasicApp\Action\BaseAction
             }
             else
             {
-                $this->model->deleteData($data);
+                $model->deleteData($data);
             }
             
             return $this->respondDeleted();

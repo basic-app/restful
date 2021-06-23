@@ -8,7 +8,7 @@ namespace BasicApp\RESTful\Actions;
 
 use Webmozart\Assert\Assert;
 
-class MassEditAction extends \BasicApp\Action\BaseAction
+class MassEditAction extends \BasicApp\Action\Action
 {
 
     public $modelName;

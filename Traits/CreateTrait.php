@@ -16,11 +16,12 @@ trait CreateTrait
         if ($this->isActionAllowed('create'))
         {
             return $this->createAction('BasicApp\RESTful\Actions\CreateAction', [
-                'modelName' => $this->createModelName ?? $this->modelName
+                'modelName' => $this->createModelName ?? $this->modelName,
+                'parentModelName' => $this->parentModelName
             ])->execute('create');
         }
 
-        return $this->fail(lang('RESTful.notImplemented', [__FUNCTION__]), 501);
+        $this->throwPageNotFoundException();
     }
     
 }

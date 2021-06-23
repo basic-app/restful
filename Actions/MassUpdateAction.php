@@ -9,7 +9,7 @@ namespace BasicApp\RESTful\Actions;
 use Webmozart\Assert\Assert;
 use BasicApp\Entity\ActiveEntityInterface;
 
-class MassUpdateAction extends \BasicApp\Action\BaseAction
+class MassUpdateAction extends \BasicApp\Action\Action
 {
 
     public $modelName;

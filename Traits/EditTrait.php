@@ -15,12 +15,21 @@ trait EditTrait
     {
         if ($this->isActionAllowed('edit'))
         {
+            if (property_exists($this, 'updateModelName'))
+            {
+                $modelName = $this->editModelName ?? ($this->updateModelName ?? $this->modelName);
+            }
+            else
+            {
+                $modelName = $this->editModelName ?? $this->modelName;
+            }
+
             return $this->createAction('BasicApp\RESTful\Actions\EditAction', [
-                'modelName' => $this->editModelName ?? $this->modelName
+                'modelName' => $modelName
             ])->execute('edit', $id);
         }
 
-        return $this->fail(lang('RESTful.notImplemented', [__FUNCTION__]), 501);
+        $this->throwPageNotFoundException();
     }
     
 }

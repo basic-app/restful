@@ -9,7 +9,7 @@ namespace BasicApp\RESTful\Actions;
 use Webmozart\Assert\Assert;
 use BasicApp\Entity\ActiveEntityInterface;
 
-class UpdateAction extends \BasicApp\Action\BaseAction
+class UpdateAction extends \BasicApp\Action\Action
 {
 
     public $modelName;
@@ -26,7 +26,7 @@ class UpdateAction extends \BasicApp\Action\BaseAction
 
             Assert::notEmpty($model, 'Model not found: ' . $modelName);
 
-            $this->data = $this->updateModel->findOne($id);
+            $this->data = $model->findOne($id);
 
             if (!$this->data)
             {
@@ -52,9 +52,9 @@ class UpdateAction extends \BasicApp\Action\BaseAction
             }
             else
             {
-                $saved = $this->updateModel->save($this->data, $errors);
+                $saved = $model->save($this->data, $errors);
             
-                $validationErrors = $this->updateModel->errors();
+                $validationErrors = $model->errors();
             }
 
             if ($saved)

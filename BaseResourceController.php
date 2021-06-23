@@ -8,6 +8,10 @@ namespace BasicApp\RESTful;
 
 use BasicApp\Controller\ActionsTrait;
 use BasicApp\Controller\ControllerTrait;
+use CodeIgniter\HTTP\RequestInterface;
+use CodeIgniter\HTTP\ResponseInterface;
+use Psr\Log\LoggerInterface;
+use BasicApp\Action\ActionInterface;
 
 abstract class BaseResourceController extends \CodeIgniter\RESTful\ResourceController
 {
@@ -16,8 +20,24 @@ abstract class BaseResourceController extends \CodeIgniter\RESTful\ResourceContr
 
     use ActionsTrait;
 
-    use RESTfulTrait;
+    protected $format = 'json';
 
-    use ResourceControllerTrait;
+    /**
+     * Constructor.
+     *
+     * @param RequestInterface  $request
+     * @param ResponseInterface $response
+     * @param LoggerInterface   $logger
+     */
+    public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
+    {
+        parent::initController($request, $response, $logger);
+
+        $this->initialize();
+    }
+
+    protected function initialize()
+    {
+    }
 
 }

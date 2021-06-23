@@ -8,7 +8,7 @@ namespace BasicApp\RESTful\Actions;
 
 use Webmozart\Assert\Assert;
 
-class EditAction extends \BasicApp\Action\BaseAction
+class EditAction extends \BasicApp\Action\Action
 {
 
     public $modelName;
@@ -25,7 +25,7 @@ class EditAction extends \BasicApp\Action\BaseAction
 
             Assert::notEmpty($model, 'Model not found: ' . $modelName);
 
-            $this->data = $this->updateModel->findOne($id);
+            $this->data = $model->findOne($id);
 
             if (!$this->data)
             {

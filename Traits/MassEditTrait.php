@@ -15,12 +15,21 @@ trait MassEditTrait
     {
         if ($this->isActionAllowed('massEdit'))
         {
+            if (property_exists($this, 'massUpdateModelName'))
+            {
+                $modelName = $this->massEditModelName ?? ($this->massUpdateModelName ?? $this->modelName);
+            }
+            else
+            {
+                $modelName = $this->massEditModelName ?? $this->modelName;
+            }
+
             return $this->createAction('BasicApp\RESTful\Actions\MassEditAction', [
-                'modelName' => $this->massEditModelName ?? $this->modelName
+                'modelName' => $modelName
             ])->execute('massEdit');
         }
 
-        return $this->fail(lang('RESTful.notImplemented', [__FUNCTION__]), 501);
+        $this->throwPageNotFoundException();
     }
     
 }

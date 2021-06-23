@@ -14,11 +14,15 @@ class CreateAction extends \BasicApp\Action\Action
 
     public $modelName;
 
+    public $parentModelName;
+
     public function run($method, ...$params)
     {
         $modelName = $this->modelName;
 
-        return function($method) use ($modelName)
+        $parentModelName = $this->parentModelName;
+
+        return function($method) use ($modelName, $parentModelName)
         {
             Assert::notEmpty($modelName, 'Model name not defined.');
 
@@ -32,14 +36,24 @@ class CreateAction extends \BasicApp\Action\Action
 
             if ($this->parentKey)
             {
-                $parent = $this->getParent();
+                Assert::notEmpty($parentModelName, 'Parent model not defined.');
 
-                $parentId = $this->parentModel->entityPrimaryKey($parent);
+                $parentModel = model($parentModelName, false);
+
+                Assert::notEmpty($parentModel, 'Parent model not found: ' . $parentModelName);
+
+                $parentId = $this->request->getGet('parentId');
+
+                Assert::notEmpty($parentId, 'parentId not defined.');
+                
+                $this->parentData = $parentModel->findOrFail($parentId, 'Parent not found.');
+
+                $parentId = $parentModel->getIdValue($this->parentData);
             
                 $defaults[$this->parentKey] = $parentId;
             }
 
-            $this->data = $this->createModel->createData($defaults);
+            $this->data = $model->createData($defaults);
 
             if (!$this->userCanMethod($this->user, $method, $error))
             {
@@ -67,14 +81,14 @@ class CreateAction extends \BasicApp\Action\Action
             }
             else
             {
-                $saved = $this->createModel->save($this->data, $errors);
+                $saved = $model->save($this->data, $errors);
 
                 if ($saved)
                 {
-                    $insertID = $this->createModel->getInsertID();
+                    $insertID = $model->getInsertID();
                 }
 
-                $validationErrors = $this->createModel->errors();
+                $validationErrors = $model->errors();
             }
 
             if ($saved)

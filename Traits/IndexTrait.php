@@ -16,11 +16,13 @@ trait IndexTrait
         if ($this->isActionAllowed('index'))
         {
             return $this->createAction('BasicApp\RESTful\Actions\IndexAction', [
-                'modelName' => $this->indexModelName ?? $this->modelName
+                'modelName' => $this->indexModelName ?? $this->modelName,
+                'searchModelName' => $this->searchModelName,
+                'parentModelName' => $this->parentModelName
             ])->execute('index');
         }
 
-        return $this->fail(lang('RESTful.notImplemented', [__FUNCTION__]), 501);
+        $this->throwPageNotFoundException();
     }
     
 }

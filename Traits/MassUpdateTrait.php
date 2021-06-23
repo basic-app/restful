@@ -20,7 +20,7 @@ trait MassUpdateTrait
             ])->execute('massUpdate');
         }
 
-        return $this->fail(lang('RESTful.notImplemented', [__FUNCTION__]), 501);
+        $this->throwPageNotFoundException();
     }
 
 }

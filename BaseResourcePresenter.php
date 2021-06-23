@@ -16,35 +16,14 @@ abstract class BaseResourcePresenter extends \CodeIgniter\RESTful\ResourcePresen
 {
 
     use ControllerTrait;
-    use ActionsTrait;
-    use RESTful2Trait;
-    use ResourcePresenterTrait;
 
-    use Traits\IndexTrait;
-    use Traits\NewTrait;
-    use Traits\CreateTrait;
-    use Traits\EditTrait;
-    use Traits\ViewTrait;
-    use Traits\UpdateTrait;
-    use Traits\MassEditTrait;    
-    use Traits\MassUpdateTrait;
-    use Traits\DeleteTrait;
+    use ActionsTrait;
 
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
         parent::initController($request, $response, $logger);
 
         $this->initialize();
-    }
-
-    public function _remap($method, ...$params)
-    {
-        if (method_exists($this, $method))
-        {
-            return $this->$method(...$params);
-        }
-
-        return $this->remapAction($method, ...$params);
     }
 
     protected function initialize()

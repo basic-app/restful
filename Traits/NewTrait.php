@@ -15,12 +15,22 @@ trait NewTrait
     {
         if ($this->isActionAllowed('new'))
         {
+            if (property_exists($this, 'createModelName'))
+            {
+                $modelName = $this->newModelName ?? ($this->createModelName ?? $this->modelName);
+            }
+            else
+            {
+                $modelName = $this->newModelName ?? $this->modelName;
+            }
+
             return $this->createAction('BasicApp\RESTful\Actions\NewAction', [
-                'modelName' => $this->newModelName ?? $this->modelName
+                'modelName' => $modelName,
+                'parentModelName' => $this->parentModelName
             ])->execute('new');
         }
 
-        return $this->fail(lang('RESTful.notImplemented', [__FUNCTION__]), 501);
+        $this->throwPageNotFoundException();
     }
     
 }
