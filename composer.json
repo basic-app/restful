@@ -10,6 +10,6 @@
         "webmozart/assert": "*",
         "basic-app/controller": "*",
         "basic-app/action": "*",
-        "basic-app/active-entity": "*"
+        "basic-app/entity": "*"
     }
 }

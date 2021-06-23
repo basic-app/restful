@@ -7,7 +7,7 @@
 namespace BasicApp\RESTful\Actions;
 
 use Webmozart\Assert\Assert;
-use BasicApp\ActiveEntity\ActiveEntityInterface;
+use BasicApp\Entity\ActiveEntityInterface;
 
 class CreateAction extends BaseAction
 {
