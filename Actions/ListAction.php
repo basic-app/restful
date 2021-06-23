@@ -10,16 +10,22 @@ use Webmozart\Assert\Assert;
 use Exception;
 use Config\Services;
 
-class ListAction extends BaseAction
+class ListAction extends \BasicApp\Action\BaseAction
 {
+
+    public $modelName;
 
     public function run($method, ...$params)
     {
-        return function($method)
-        {
-            Assert::notEmpty($this->modelName, 'Model name not defined.');
+        $modelName = $this->modelName;
 
-            Assert::notEmpty($this->model, 'Model not found: ' . $this->modelName);
+        return function($method) use ($modelName)
+        {
+            Assert::notEmpty($modelName, 'Model name not defined.');
+
+            $model = model($modelName, false);
+
+            Assert::notEmpty($model, 'Model not found: ' . $modelName);
 
             $parent = null;
 

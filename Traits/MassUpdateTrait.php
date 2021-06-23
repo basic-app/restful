@@ -16,11 +16,11 @@ trait MassUpdateTrait
         if ($this->isActionAllowed('massUpdate'))
         {
             return $this->createAction('BasicApp\RESTful\Actions\MassUpdateAction', [
-                'modelName' => $this->massUpdateModelName
+                'modelName' => $this->massUpdateModelName ?? $this->modelName
             ])->execute('massUpdate');
         }
 
-        return $this->fail(lang('RESTful.notImplemented', ['massUpdate']), 501);
+        return $this->fail(lang('RESTful.notImplemented', [__FUNCTION__]), 501);
     }
 
 }

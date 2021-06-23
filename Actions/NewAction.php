@@ -8,17 +8,23 @@ namespace BasicApp\RESTful\Actions;
 
 use Webmozart\Assert\Assert;
 
-class NewAction extends BaseAction
+class NewAction extends \BasicApp\Action\BaseAction
 {
+
+    public $modelName;
 
     public function run($method, ...$params)
     {
-        return function($method)
-        {    
-            Assert::notEmpty($this->createModelName, 'Create model name not defined.');
+        $modelName = $this->modelName;
 
-            Assert::notEmpty($this->createModel, 'Create model not found: ' . $this->createModelName);
-            
+        return function($method) use ($modelName)
+        {    
+            Assert::notEmpty($modelName, 'Model name not defined.');
+
+            $model = model($modelName, false);
+
+            Assert::notEmpty($model, 'Model not found: ' . $modelName);
+
             $defaults = [];
 
             if ($this->parentKey)
@@ -30,7 +36,7 @@ class NewAction extends BaseAction
                 $defaults[$this->parentKey] = $parentId;
             }
 
-            $this->data = $this->createModel->createData($defaults);
+            $this->data = $model->createData($defaults);
 
             $this->data->fill($this->request->getGet());
 

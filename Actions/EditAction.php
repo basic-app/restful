@@ -8,16 +8,22 @@ namespace BasicApp\RESTful\Actions;
 
 use Webmozart\Assert\Assert;
 
-class EditAction extends BaseAction
+class EditAction extends \BasicApp\Action\BaseAction
 {
+
+    public $modelName;
 
     public function run($method, ...$params)
     {
-        return function($method, $id)
-        {   
-            Assert::notEmpty($this->updateModelName, 'Update model name not defined.');
+        $modelName = $this->modelName;
 
-            Assert::notEmpty($this->updateModel, 'Update model not found: ' . $this->updateModelName);
+        return function($method, $id) use ($modelName)
+        {   
+            Assert::notEmpty($modelName, 'Model name not defined.');
+
+            $model = model($modelName, false);
+
+            Assert::notEmpty($model, 'Model not found: ' . $modelName);
 
             $this->data = $this->updateModel->findOne($id);
 

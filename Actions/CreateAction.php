@@ -9,16 +9,22 @@ namespace BasicApp\RESTful\Actions;
 use Webmozart\Assert\Assert;
 use BasicApp\Entity\ActiveEntityInterface;
 
-class CreateAction extends BaseAction
+class CreateAction extends \BasicApp\Action\Action
 {
+
+    public $modelName;
 
     public function run($method, ...$params)
     {
-        return function($method)
-        {
-            Assert::notEmpty($this->createModelName, 'Create model name not defined.');
+        $modelName = $this->modelName;
 
-            Assert::notEmpty($this->createModel, 'Create model not found: ' . $this->createModelName);
+        return function($method) use ($modelName)
+        {
+            Assert::notEmpty($modelName, 'Model name not defined.');
+
+            $model = model($modelName, false);
+
+            Assert::notEmpty($model, 'Model not found: ' . $modelName);
 
             $defaults = [];
 

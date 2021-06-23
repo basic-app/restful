@@ -8,7 +8,7 @@ namespace BasicApp\RESTful\Actions;
 
 use Webmozart\Assert\Assert;
 
-class MassEditAction extends BaseAction
+class MassEditAction extends \BasicApp\Action\BaseAction
 {
 
     public $modelName;
@@ -19,16 +19,11 @@ class MassEditAction extends BaseAction
 
         return function($method) use ($modelName)
         {
-            if ($modelName)
-            {
-                $model = model($modelName, false);
+            Assert::notEmpty($modelName, 'Model name not defined.');
 
-                Assert::notEmpty($model, 'Model not found: ' . $modelName);
-            }
-            else
-            {
-                $model = $this->model;
-            }
+            $model = model($modelName, false);
+
+            Assert::notEmpty($model, 'Model not found: ' . $modelName);
 
             $this->data = $model->createEntity();
 

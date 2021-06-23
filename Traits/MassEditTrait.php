@@ -16,11 +16,11 @@ trait MassEditTrait
         if ($this->isActionAllowed('massEdit'))
         {
             return $this->createAction('BasicApp\RESTful\Actions\MassEditAction', [
-                'modelName' => $this->massEditModelName
+                'modelName' => $this->massEditModelName ?? $this->modelName
             ])->execute('massEdit');
         }
 
-        return $this->fail(lang('RESTful.notImplemented', ['massEdit']), 501);
+        return $this->fail(lang('RESTful.notImplemented', [__FUNCTION__]), 501);
     }
     
 }
