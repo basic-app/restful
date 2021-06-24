@@ -13,16 +13,16 @@ trait IndexTrait
 
     public function index()
     {
-        if ($this->isActionAllowed('index'))
+        if (!$this->isActionAllowed('index'))
         {
-            return $this->createAction('BasicApp\RESTful\Actions\IndexAction', [
-                'modelName' => $this->indexModelName ?? $this->modelName,
-                'searchModelName' => $this->searchModelName,
-                'parentModelName' => $this->parentModelName
-            ])->execute('index');
+            $this->throwPageNotFoundException();
         }
 
-        $this->throwPageNotFoundException();
+        return $this->createAction('BasicApp\RESTful\Actions\IndexAction', [
+            'modelName' => $this->indexModelName ?? $this->modelName,
+            'searchModelName' => $this->searchModelName,
+            'parentModelName' => $this->parentModelName
+        ])->execute('index');        
     }
     
 }

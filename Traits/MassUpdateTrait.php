@@ -13,14 +13,14 @@ trait MassUpdateTrait
     
     public function massUpdate()
     {
-        if ($this->isActionAllowed('massUpdate'))
+        if (!$this->isActionAllowed('massUpdate'))
         {
-            return $this->createAction('BasicApp\RESTful\Actions\MassUpdateAction', [
-                'modelName' => $this->massUpdateModelName ?? $this->modelName
-            ])->execute('massUpdate');
+            $this->throwPageNotFoundException();
         }
 
-        $this->throwPageNotFoundException();
+        return $this->createAction('BasicApp\RESTful\Actions\MassUpdateAction', [
+            'modelName' => $this->massUpdateModelName ?? $this->modelName
+        ])->execute('massUpdate');
     }
 
 }

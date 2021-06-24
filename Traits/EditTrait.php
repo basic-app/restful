@@ -13,23 +13,23 @@ trait EditTrait
 
     public function edit($id = NULL)
     {
-        if ($this->isActionAllowed('edit'))
+        if (!$this->isActionAllowed('edit'))
         {
-            if (property_exists($this, 'updateModelName'))
-            {
-                $modelName = $this->editModelName ?? ($this->updateModelName ?? $this->modelName);
-            }
-            else
-            {
-                $modelName = $this->editModelName ?? $this->modelName;
-            }
-
-            return $this->createAction('BasicApp\RESTful\Actions\EditAction', [
-                'modelName' => $modelName
-            ])->execute('edit', $id);
+            $this->throwPageNotFoundException();
         }
 
-        $this->throwPageNotFoundException();
+        if (property_exists($this, 'updateModelName'))
+        {
+            $modelName = $this->editModelName ?? ($this->updateModelName ?? $this->modelName);
+        }
+        else
+        {
+            $modelName = $this->editModelName ?? $this->modelName;
+        }
+
+        return $this->createAction('BasicApp\RESTful\Actions\EditAction', [
+            'modelName' => $modelName
+        ])->execute('edit', $id);
     }
     
 }

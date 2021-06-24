@@ -13,14 +13,14 @@ trait DeleteTrait
 
     public function delete($id = null)
     {
-        if ($this->isActionAllowed('delete'))
+        if (!$this->isActionAllowed('delete'))
         {
-            return $this->createAction('BasicApp\RESTful\Actions\DeleteAction', [
-                'modelName' => $this->deleteModelName ?? $this->modelName
-            ])->execute('delete', $id);
+            $this->throwPageNotFoundException();
         }
 
-        $this->throwPageNotFoundException();
+        return $this->createAction('BasicApp\RESTful\Actions\DeleteAction', [
+            'modelName' => $this->deleteModelName ?? $this->modelName
+        ])->execute('delete', $id);
     }
     
 }

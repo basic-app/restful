@@ -13,15 +13,15 @@ trait CreateTrait
 
     public function create()
     {
-        if ($this->isActionAllowed('create'))
+        if (!$this->isActionAllowed('create'))
         {
-            return $this->createAction('BasicApp\RESTful\Actions\CreateAction', [
-                'modelName' => $this->createModelName ?? $this->modelName,
-                'parentModelName' => $this->parentModelName
-            ])->execute('create');
+            $this->throwPageNotFoundException();   
         }
-
-        $this->throwPageNotFoundException();
+        
+        return $this->createAction('BasicApp\RESTful\Actions\CreateAction', [
+            'modelName' => $this->createModelName ?? $this->modelName,
+            'parentModelName' => $this->parentModelName
+        ])->execute('create');
     }
     
 }

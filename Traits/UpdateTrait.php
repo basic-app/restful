@@ -13,14 +13,14 @@ trait UpdateTrait
 
     public function update($id = null)
     {
-        if ($this->isActionAllowed('update'))
+        if (!$this->isActionAllowed('update'))
         {
-            return $this->createAction('BasicApp\RESTful\Actions\UpdateAction', [
-                'modelName' => $this->updateModelName ?? $this->modelName
-            ])->execute('update', $id);
+            $this->throwPageNotFoundException();
         }
 
-        $this->throwPageNotFoundException();
+        return $this->createAction('BasicApp\RESTful\Actions\UpdateAction', [
+            'modelName' => $this->updateModelName ?? $this->modelName
+        ])->execute('update', $id);
     }
     
 }

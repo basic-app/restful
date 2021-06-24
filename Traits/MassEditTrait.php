@@ -13,23 +13,23 @@ trait MassEditTrait
 
     public function massEdit()
     {
-        if ($this->isActionAllowed('massEdit'))
+        if (!$this->isActionAllowed('massEdit'))
         {
-            if (property_exists($this, 'massUpdateModelName'))
-            {
-                $modelName = $this->massEditModelName ?? ($this->massUpdateModelName ?? $this->modelName);
-            }
-            else
-            {
-                $modelName = $this->massEditModelName ?? $this->modelName;
-            }
-
-            return $this->createAction('BasicApp\RESTful\Actions\MassEditAction', [
-                'modelName' => $modelName
-            ])->execute('massEdit');
+            $this->throwPageNotFoundException();
         }
 
-        $this->throwPageNotFoundException();
+        if (property_exists($this, 'massUpdateModelName'))
+        {
+            $modelName = $this->massEditModelName ?? ($this->massUpdateModelName ?? $this->modelName);
+        }
+        else
+        {
+            $modelName = $this->massEditModelName ?? $this->modelName;
+        }
+
+        return $this->createAction('BasicApp\RESTful\Actions\MassEditAction', [
+            'modelName' => $modelName
+        ])->execute('massEdit');
     }
     
 }

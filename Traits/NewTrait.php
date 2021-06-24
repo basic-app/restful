@@ -13,24 +13,24 @@ trait NewTrait
 
     public function new()
     {
-        if ($this->isActionAllowed('new'))
+        if (!$this->isActionAllowed('new'))
         {
-            if (property_exists($this, 'createModelName'))
-            {
-                $modelName = $this->newModelName ?? ($this->createModelName ?? $this->modelName);
-            }
-            else
-            {
-                $modelName = $this->newModelName ?? $this->modelName;
-            }
-
-            return $this->createAction('BasicApp\RESTful\Actions\NewAction', [
-                'modelName' => $modelName,
-                'parentModelName' => $this->parentModelName
-            ])->execute('new');
+            $this->throwPageNotFoundException();
         }
 
-        $this->throwPageNotFoundException();
+        if (property_exists($this, 'createModelName'))
+        {
+            $modelName = $this->newModelName ?? ($this->createModelName ?? $this->modelName);
+        }
+        else
+        {
+            $modelName = $this->newModelName ?? $this->modelName;
+        }
+
+        return $this->createAction('BasicApp\RESTful\Actions\NewAction', [
+            'modelName' => $modelName,
+            'parentModelName' => $this->parentModelName
+        ])->execute('new');
     }
     
 }

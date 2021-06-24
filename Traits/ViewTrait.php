@@ -13,14 +13,14 @@ trait ViewTrait
 
     public function view()
     {
-        if ($this->isActionAllowed('view'))
+        if (!$this->isActionAllowed('view'))
         {
-            return $this->createAction('BasicApp\RESTful\Actions\ViewAction', [
-                'modelName' => $this->viewModelName ?? $this->modelName
-            ])->execute('view');
+            $this->throwPageNotFoundException();
         }
 
-        $this->throwPageNotFoundException();
+        return $this->createAction('BasicApp\RESTful\Actions\ViewAction', [
+            'modelName' => $this->viewModelName ?? $this->modelName
+        ])->execute('view');
     }
     
 }
