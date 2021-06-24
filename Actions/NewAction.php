@@ -15,13 +15,17 @@ class NewAction extends \BasicApp\Action\Action
 
     public $parentModelName;
 
+    public $template = 'new';
+
     public function run($method, ...$params)
     {
         $modelName = $this->modelName;
 
         $parentModelName = $this->parentModelName;
 
-        return function($method) use ($modelName, $parentModelName)
+        $template = $this->template;
+
+        return function($method) use ($modelName, $parentModelName, $template)
         {    
             Assert::notEmpty($modelName, 'Model name not defined.');
 
@@ -30,6 +34,8 @@ class NewAction extends \BasicApp\Action\Action
             Assert::notEmpty($model, 'Model not found: ' . $modelName);
 
             $defaults = [];
+
+            $parentData = null;
 
             if ($this->parentKey)
             {
@@ -43,34 +49,26 @@ class NewAction extends \BasicApp\Action\Action
 
                 Assert::notEmpty($parentId, 'parentId not defined.');
                 
-                $this->parentData = $parentModel->findOrFail($parentId, 'Parent not found.');
+                $parentData = $parentModel->findOrFail($parentId, 'Parent not found.');
 
-                $parentId = $parentModel->getIdValue($this->parentData);
+                $parentId = $parentModel->getIdValue($parentData);
 
                 $defaults[$this->parentKey] = $parentId;
             }
 
-            $this->data = $model->createData($defaults);
+            $data = $model->createData($defaults);
 
-            $this->data->fill($this->request->getGet());
+            $data->fill($this->request->getGet());
 
             if (!$this->userCanMethod($this->user, $method, $error))
             {
                 $this->throwSecurityException($error ?? lang('Access denied.'));
             }
-
-            $result = [
-                'data' => $this->data
-            ];
-
-            /*
-            if ($parent)
-            {
-                $result['parentData'] = $this->parentData;
-            }
-            */
-
-            return $this->respondOK($result);
+        
+            return $this->render($template, [
+                'parentData' => $parentData,
+                'data' => $data
+            ]);
         };
     }
 
