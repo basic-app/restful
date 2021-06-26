@@ -80,6 +80,8 @@ trait ResourceControllerTrait
 
     public function render(string $view, array $params = [])
     {
+        $params = $this->prepareResponse($params);
+
         return $this->respondOK($params);
     }
 
