@@ -78,4 +78,9 @@ trait ResourceControllerTrait
         return $this->respondError($data, $this->codes['invalid_data'], $message);
     }
 
+    public function render(string $view, array $params = [])
+    {
+        return $this->respondOK($params);
+    }
+
 }
