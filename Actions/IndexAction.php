@@ -73,21 +73,21 @@ class IndexAction extends \BasicApp\Action\Action
 
                 Assert::notEmpty($searchModel, 'Search model not found: ' . $searchModelName);
 
-                $this->searchData = $searchModel->createData($this->request->getGet());
+                $searchData = $searchModel->createData($this->request->getGet());
 
-                if ($searchModel->validate($this->searchData, $errors))
+                if ($searchModel->validate($searchData->toRawArray(), $errors))
                 {
-                    $this->searchData->applyToQuery($model);
+                    $searchData->applyToQuery($model);
                 }
                 else
                 {
-                    return $this->respondValidationErrors([
+                    return $this->respondInvalidData([
                         'errors' => (array) $errors,
                         'validationErrors' => (array) $searchModel->errors()
                     ]);
                 }
 
-                $result['searchData'] = $this->searchData->toArray();
+                $result['searchData'] = $searchData->toArray();
             }
 
             if ($this->perPage)
