@@ -10,84 +10,75 @@ use Webmozart\Assert\Assert;
 use Exception;
 use Config\Services;
 
-class IndexAction extends \BasicApp\Action\Action
+class IndexAction extends BaseAction
 {
 
-    public $modelName;
+    use ParentTrait;
+    use SearchTrait;
 
-    public $parentModelName;
+    public $beforeIndex;
 
-    public $searchModelName;
-
-    public function run($method, ...$params)
+    public function initialize(?string $method = null)
     {
-        $modelName = $this->modelName;
+        parent::initialize($method);
 
-        $searchModelName = $this->searchModelName;
+        $this->initializeParent();
 
-        $parentModelName = $this->parentModelName;
+        $this->initializeSearch();
+    }
 
-        return function($method) use ($modelName, $parentModelName, $searchModelName)
+    public function run(...$params)
+    {
+        $action = $this;
+
+        return function(...$params) use ($action)
         {
-            Assert::notEmpty($modelName, 'Model name not defined.');
-
-            $model = model($modelName, false);
-
-            Assert::notEmpty($model, 'Model not found: ' . $modelName);
-            
-            $parent = null;
-
-            if ($this->parentKey)
+            if ($action->parentKey)
             {
-                Assert::notEmpty($parentModelName, 'Parent model not defined.');
-
-                $parentModel = model($parentModelName, false);
-
-                Assert::notEmpty($parentModel, 'Parent model not found: ' . $parentModelName);
-
-                $parentId = $this->request->getGet('parentId');
-
-                Assert::notEmpty($parentId, 'parentId not defined.');
-                
-                $this->parentData = $parentModel->findOrFail($parentId, 'Parent not found.');
-
-                $parentId = $parentModel->getIdValue($this->parentData);
-
-                $model->where($this->parentKey, $parentId);
+                $action->model->where($action->parentKey, $action->parentId);
             }
-
-            if (!$this->userCanMethod($this->user, $method, $parent))
-            {
-                $this->throwSecurityException(lang('Access denied.'));
-            }
-
-            $result = [];
 
             $errors = [];
 
             $validationErrors = [];
 
-            if ($searchModelName)
+            if ($action->beforeIndex)
             {
-                $searchModel = model($searchModelName, false);
+                $result = $this->trigger($action->beforeIndex, [
+                    'model' => $action->model,
+                    'data' => $action->data,
+                    'parentModel' => $action->parentModel,
+                    'parentData' => $action->parentData,
+                    'searchModel' => $action->searchModel,
+                    'searchData' => $action->searchData,
+                    'errors' => $errors,
+                    'validationErrors' => $validationErrors,
+                    'result' => null
+                ]);
 
-                Assert::notEmpty($searchModel, 'Search model not found: ' . $searchModelName);
-
-                $searchData = $searchModel->createData($this->request->getGet());
-
-                if ($searchModel->validate($searchData->toRawArray(), $errors))
+                if ($result['result'] !== null)
                 {
-                    $searchData->applyToQuery($model);
+                    return $result['result'];
+                }
+
+                $errors = $result['errors'];
+
+                $validationErrors = $result['validationErrors'];
+            }
+
+            if ($action->searchModel)
+            {
+                if ($action->searchModel->validate($action->searchData->toRawArray(), $errors))
+                {
+                    $action->searchData->applyToQuery($action->model);
                 }
                 else
                 {
                     return $this->respondInvalidData([
                         'errors' => (array) $errors,
-                        'validationErrors' => (array) $searchModel->errors()
+                        'validationErrors' => (array) $action->searchModel->errors()
                     ]);
                 }
-
-                $result['searchData'] = $searchData->toArray();
             }
 
             if ($this->perPage)
@@ -115,22 +106,28 @@ class IndexAction extends \BasicApp\Action\Action
                     }
                 }
 
-                $result['elements'] = $model->prepareBuilder()->paginate($perPage);
+                $elements = $model->prepareBuilder()->paginate($perPage);
 
-                $result['currentPage'] = $model->pager->getCurrentPage();
-
-                $result['perPage'] = $model->pager->getPerPage();
-
-                $result['pageCount'] = $model->pager->getPageCount();
-
-                $result['total'] = $model->pager->getTotal();
+                return $this->respondOK([
+                    'parentData' => $action->parentData,
+                    'elements' => $elements,
+                    'searchData' => $action->searchData,
+                    'currentPage' => $action->model->pager->getCurrentPage(),
+                    'perPage' => $action->model->pager->getPerPage(),
+                    'pageCount' => $action->model->pager->getPageCount(),
+                    'total' => $action->model->pager->getTotal()
+                ]);
             }
             else
             {
-                $result['elements'] = $model->prepareBuilder()->findAll();
+                $elements = $action->model->prepareBuilder()->findAll();
+            
+                return $this->respondOK([
+                    'parentData' => $action->parentData,
+                    'elements' => $elements,
+                    'searchData' => $action->searchData
+                ]);
             }
-
-            return $this->respondOK($result);
         };
     }
 

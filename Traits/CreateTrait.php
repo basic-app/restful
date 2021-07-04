@@ -11,17 +11,34 @@ trait CreateTrait
 
     protected $createModelName;
 
-    public function create()
+    protected $beforeCreate = ['beforeCreate'];
+
+    protected function beforeCreate(array $data) : array
     {
-        if (!$this->isActionAllowed('create'))
+        return $data;
+    }
+
+    public function create(...$params)
+    {        
+        if (!$this->isActionAllowed(__FUNCTION__, $error))
         {
-            $this->throwPageNotFoundException();   
+            throw PageNotFoundException::forPageNotFound($error ?? lang('Page not found.'));
         }
-        
-        return $this->createAction('BasicApp\RESTful\Actions\CreateAction', [
+
+        $action = $this->createAction('BasicApp\RESTful\Actions\CreateAction', [
             'modelName' => $this->createModelName ?? $this->modelName,
-            'parentModelName' => $this->parentModelName
-        ])->execute('create');
+            'parentModelName' => $this->parentModelName,
+            'beforeCreate' => 'beforeCreate'
+        ]);
+
+        $action->initialize(__FUNCTION__);
+
+        if (!$this->beforeAction($action, $error))
+        {
+            $this->throwSecurityException($error ?? lang('Access denied.'));
+        }
+
+        return $action->execute(...$params);
     }
     
 }

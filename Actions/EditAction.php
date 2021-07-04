@@ -6,42 +6,68 @@
  */
 namespace BasicApp\RESTful\Actions;
 
+use Closure;
 use Webmozart\Assert\Assert;
 
-class EditAction extends \BasicApp\Action\Action
+class EditAction extends BaseAction
 {
 
     public $modelName;
 
-    public function run($method, ...$params)
+    public $model;
+
+    public $data;
+
+    public $id;
+
+    public $beforeEdit;
+
+    public $template = 'edit';
+
+    public function initialize(?string $method = null)
     {
-        $modelName = $this->modelName;
+        parent::initialize($method);
 
-        return function($method, $id) use ($modelName)
-        {   
-            Assert::notEmpty($modelName, 'Model name not defined.');
+        Assert::notEmpty($this->modelName, 'Model name not defined.');
 
-            $model = model($modelName, false);
+        $this->model = model($this->modelName, false);
 
-            Assert::notEmpty($model, 'Model not found: ' . $modelName);
+        Assert::notEmpty($this->model, 'Model not found: ' . $this->modelName);
 
-            $this->data = $model->findOne($id);
+        if ($this->id)
+        {
+            $this->data = $this->model->findOne($this->id);
+        }
+    }
 
-            if (!$this->data)
+    public function run(...$params)
+    {
+        $action = $this;
+
+        return function(...$params) use ($action)
+        {
+            if (!$action->data)
             {
                 return $this->failNotFound();
             }
 
-            if (!$this->userCanMethod($this->user, $method, $error))
+            if ($action->beforeEdit)
             {
-                $this->throwSecurityException($error ?? lang('Access denied.'));
+                $result = $this->trigger($action->beforeEdit, [
+                    'model' => $action->model,
+                    'data' => $action->data,
+                    'result' => null
+                ]);
+
+                if ($result['result'] !== null)
+                {
+                    return $result['result'];
+                }
             }
 
-            $result = [
-                'data' => $this->data
-            ];
-
-            return $this->respondOK($result);
+            return $this->respondOK([
+                'data' => $action->data
+            ]);
         };
     }
 

@@ -11,16 +11,34 @@ trait DeleteTrait
 
     protected $deleteModelName;
 
-    public function delete($id = null)
+    protected $beforeDelete = ['beforeDelete'];
+
+    protected function beforeDelete(array $data) : array
     {
-        if (!$this->isActionAllowed('delete'))
+        return $data;
+    }
+
+    public function delete($id = null, ...$params)
+    {
+        if (!$this->isActionAllowed(__FUNCTION__, $error))
         {
-            $this->throwPageNotFoundException();
+            throw PageNotFoundException::forPageNotFound($error ?? lang('Page not found.'));
         }
 
-        return $this->createAction('BasicApp\RESTful\Actions\DeleteAction', [
-            'modelName' => $this->deleteModelName ?? $this->modelName
-        ])->execute('delete', $id);
+        $action = $this->createAction('BasicApp\RESTful\Actions\DeleteAction', [
+            'modelName' => $this->deleteModelName ?? $this->modelName,
+            'beforeDelete' => 'beforeDelete',
+            'id' => $id
+        ]);
+
+        $action->initialize(__FUNCTION__);
+
+        if (!$this->beforeAction($action, $error))
+        {
+            $this->throwSecurityException($error ?? lang('Access denied.'));
+        }
+
+        return $action->execute(...$params);
     }
     
 }

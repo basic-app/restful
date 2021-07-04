@@ -11,16 +11,34 @@ trait UpdateTrait
 
     protected $updateModelName;
 
-    public function update($id = null)
+    protected $beforeUpdate = ['beforeUpdate'];
+
+    protected function beforeUpdate(array $data) : array
     {
-        if (!$this->isActionAllowed('update'))
+        return $data;
+    }
+
+    public function update($id = null, ...$params)
+    {
+        if (!$this->isActionAllowed(__FUNCTION__, $error))
         {
-            $this->throwPageNotFoundException();
+            throw PageNotFoundException::forPageNotFound($error ?? lang('Page not found.'));
         }
 
-        return $this->createAction('BasicApp\RESTful\Actions\UpdateAction', [
-            'modelName' => $this->updateModelName ?? $this->modelName
-        ])->execute('update', $id);
+        $action = $this->createAction('BasicApp\RESTful\Actions\UpdateAction', [
+            'modelName' => $this->updateModelName ?? $this->modelName,
+            'beforeUpdate' => 'beforeUpdate',
+            'id' => $id
+        ]);
+
+        $action->initialize(__FUNCTION__);
+
+        if (!$this->beforeAction($action, $error))
+        {
+            $this->throwSecurityException($error ?? lang('Access denied.'));
+        }
+
+        return $action->execute(...$params);
     }
     
 }

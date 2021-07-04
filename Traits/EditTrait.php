@@ -11,11 +11,18 @@ trait EditTrait
 
     protected $editModelName;
 
-    public function edit($id = NULL)
+    protected $beforeEdit = ['beforeEdit'];
+
+    protected function beforeEdit(array $data) : array
     {
-        if (!$this->isActionAllowed('edit'))
+        return $data;
+    }
+
+    public function edit($id = NULL, ...$params)
+    {
+        if (!$this->isActionAllowed(__FUNCTION__, $error))
         {
-            $this->throwPageNotFoundException();
+            throw PageNotFoundException::forPageNotFound($error ?? lang('Page not found.'));
         }
 
         if (property_exists($this, 'updateModelName'))
@@ -27,9 +34,20 @@ trait EditTrait
             $modelName = $this->editModelName ?? $this->modelName;
         }
 
-        return $this->createAction('BasicApp\RESTful\Actions\EditAction', [
-            'modelName' => $modelName
-        ])->execute('edit', $id);
+        $action = $this->createAction('BasicApp\RESTful\Actions\EditAction',[
+            'modelName' => $modelName,
+            'beforeEdit' => 'beforeEdit',
+            'id' => $id
+        ]);
+
+        $action->initialize(__FUNCTION__);
+
+        if (!$this->beforeAction($action, $error))
+        {
+            $this->throwSecurityException($error ?? lang('Access denied.'));
+        }
+
+        return $action->execute(...$params);
     }
     
 }

@@ -11,18 +11,35 @@ trait IndexTrait
 
     protected $indexModelName;
 
-    public function index()
+    protected $beforeIndex = ['beforeIndex'];
+
+    protected function beforeIndex(array $data) : array
     {
-        if (!$this->isActionAllowed('index'))
+        return $data;
+    }
+
+    public function index(...$params)
+    {
+        if (!$this->isActionAllowed(__FUNCTION__, $error))
         {
-            $this->throwPageNotFoundException();
+            throw PageNotFoundException::forPageNotFound($error ?? lang('Page not found.'));
         }
 
-        return $this->createAction('BasicApp\RESTful\Actions\IndexAction', [
+        $action = $this->createAction('BasicApp\RESTful\Actions\IndexAction', [
             'modelName' => $this->indexModelName ?? $this->modelName,
             'searchModelName' => $this->searchModelName,
-            'parentModelName' => $this->parentModelName
-        ])->execute('index');        
+            'parentModelName' => $this->parentModelName,
+            'beforeIndex' => 'beforeIndex'
+        ]);
+
+        if (!$this->beforeAction($action, $error))
+        {
+            $this->throwSecurityException($error ?? lang('Access denied.'));
+        }
+
+        $action->initialize(__FUNCTION__);
+
+        return $action->execute(...$params);
     }
     
 }

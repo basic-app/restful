@@ -8,40 +8,63 @@ namespace BasicApp\RESTful\Actions;
 
 use Webmozart\Assert\Assert;
 
-class ShowAction extends \BasicApp\Action\Action
+class ShowAction extends BaseAction
 {
 
     public $modelName;
 
-    public function run($method, ...$params)
+    public $model;
+
+    public $id;
+
+    public $data;
+
+    public $beforeShow;
+
+    public function initialize(?string $method = null)
     {
-        $modelName = $this->modelName;
+        parent::initialize($method);
 
-        return function($method, $id) use ($modelName)
+        Assert::notEmpty($this->modelName, 'Model name not defined.');
+
+        $this->model = model($this->modelName, false);
+
+        Assert::notEmpty($this->model, 'Model not found: ' . $this->modelName);
+
+        if ($this->id)
         {
-            Assert::notEmpty($modelName, 'Model name not defined.');
+            $this->data = $this->model->prepareBuilder()->findOne($this->id);
+        }
+    }
 
-            $model = model($modelName, false);
+    public function run(...$params)
+    {
+        $action = $this;
 
-            Assert::notEmpty($model, 'Model not found: ' . $modelName);
-
-            $this->data = $model->prepareBuilder()->findOne($id);
-
-            if (!$this->data)
+        return function(...$params) use ($action)
+        {
+            if (!$action->data)
             {
                 return $this->failNotFound();
             }
 
-            if (!$this->userCanMethod($this->user, $method, $error))
+            if ($action->beforeShow)
             {
-                $this->throwSecurityException($error ?? lang('Access denied.'));
+                $result = $this->trigger($action->beforeShow, [
+                    'model' => $action->model,
+                    'data' => $action->data,
+                    'result' => null
+                ]);
+
+                if ($result['result'] !== null)
+                {
+                    return $result['result'];
+                }
             }
 
-            $result = [
-                'data' => $this->data
-            ];
-
-            return $this->respondOK($result);
+            return $this->respondOK([
+                'data' => $action->data
+            ]);
         };
     }
 

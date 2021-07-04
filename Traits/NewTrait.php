@@ -11,11 +11,18 @@ trait NewTrait
 
     protected $newModelName;
 
-    public function new()
+    protected $beforeNew = ['beforeNew'];
+
+    protected function beforeNew(array $data) : array
     {
-        if (!$this->isActionAllowed('new'))
+        return $data;
+    }
+
+    public function new(...$params)
+    {
+        if (!$this->isActionAllowed(__FUNCTION__, $error))
         {
-            $this->throwPageNotFoundException();
+            throw PageNotFoundException::forPageNotFound($error ?? lang('Page not found.'));
         }
 
         if (property_exists($this, 'createModelName'))
@@ -27,10 +34,20 @@ trait NewTrait
             $modelName = $this->newModelName ?? $this->modelName;
         }
 
-        return $this->createAction('BasicApp\RESTful\Actions\NewAction', [
+        $action = $this->createAction('BasicApp\RESTful\Actions\NewAction', [
             'modelName' => $modelName,
-            'parentModelName' => $this->parentModelName
-        ])->execute('new');
+            'parentModelName' => $this->parentModelName,
+            'beforeNew' => 'beforeNew'
+        ]);
+
+        $action->initialize(__FUNCTION__);
+
+        if (!$this->beforeAction($action, $error))
+        {
+            $this->throwSecurityException($error ?? lang('Access denied.'));
+        }
+
+        return $action->execute(...$params);
     }
     
 }

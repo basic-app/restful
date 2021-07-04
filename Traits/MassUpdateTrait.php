@@ -10,17 +10,34 @@ trait MassUpdateTrait
 {
 
     protected $massUpdateModelName;
-    
-    public function massUpdate()
+
+    protected $beforeMassUpdate = ['beforeMassUpdate'];
+
+    protected function beforeMassUpdate(array $data) : array
     {
-        if (!$this->isActionAllowed('massUpdate'))
+        return $data;
+    }
+    
+    public function massUpdate(...$params)
+    {
+        if (!$this->isActionAllowed(__FUNCTION__, $error))
         {
-            $this->throwPageNotFoundException();
+            throw PageNotFoundException::forPageNotFound($error ?? lang('Page not found.'));
         }
 
-        return $this->createAction('BasicApp\RESTful\Actions\MassUpdateAction', [
-            'modelName' => $this->massUpdateModelName ?? $this->modelName
-        ])->execute('massUpdate');
+        $action = $this->createAction('BasicApp\RESTful\Actions\MassUpdateAction', [
+            'modelName' => $this->massUpdateModelName ?? $this->modelName,
+            'beforeMassUpdate' => 'beforeMassUpdate'
+        ]);
+
+        if (!$this->beforeAction($action, $error))
+        {
+            $this->throwSecurityException($error ?? lang('Access denied.'));
+        }
+
+        $action->initialize(__FUNCTION__);
+
+        return $action->execute(...$params);
     }
 
 }

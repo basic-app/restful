@@ -11,11 +11,18 @@ trait MassEditTrait
 
     protected $massEditModelName;
 
-    public function massEdit()
+    protected $beforeMassEdit = ['beforeMassEdit'];
+
+    protected function beforeMassEdit(array $data) : array
     {
-        if (!$this->isActionAllowed('massEdit'))
+        return $data;
+    }
+
+    public function massEdit(...$params)
+    {
+        if (!$this->isActionAllowed(__FUNCTION__, $error))
         {
-            $this->throwPageNotFoundException();
+            throw PageNotFoundException::forPageNotFound($error ?? lang('Page not found.'));
         }
 
         if (property_exists($this, 'massUpdateModelName'))
@@ -27,9 +34,19 @@ trait MassEditTrait
             $modelName = $this->massEditModelName ?? $this->modelName;
         }
 
-        return $this->createAction('BasicApp\RESTful\Actions\MassEditAction', [
-            'modelName' => $modelName
-        ])->execute('massEdit');
+        $action = $this->createAction('BasicApp\RESTful\Actions\MassEditAction', [
+            'modelName' => $modelName,
+            'beforeMassEdit' => 'beforeMassEdit'
+        ]);
+
+        $action->initialize(__FUNCTION__);
+
+        if (!$this->beforeAction($action, $error))
+        {
+            $this->throwSecurityException($error ?? lang('Access denied.'));
+        }
+
+        return $action->execute(...$params);
     }
     
 }

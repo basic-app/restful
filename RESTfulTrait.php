@@ -6,9 +6,6 @@
  */
 namespace BasicApp\RESTful;
 
-use Webmozart\Assert\Assert;
-use BasicApp\Action\ActionInterface;
-
 trait RESTfulTrait
 {
 
@@ -16,25 +13,27 @@ trait RESTfulTrait
 
     protected $perPageItems;
 
-    protected $data;
-
-    protected $errors = [];
-
-    protected $validationErrors = [];
-
     protected $parentKey;
 
     protected $parentModelName;
 
-    protected $parentData;
-
     protected $searchModelName;
 
-    protected $searchData;
-
-    public function userCanMethod($user, string $method, &$error = null) : bool
+    protected function getRequestData(array $return = []) : array
     {
-        return true;
+        if ($this->format === 'json')
+        {
+            $jsonData = $this->request->getJSON(true);
+
+            if ($jsonData !== null)
+            {
+                return array_merge($return, $jsonData);
+            }
+        }
+
+        $return = array_merge($return, $this->request->getPost());
+
+        return $return;
     }
 
 }

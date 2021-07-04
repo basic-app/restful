@@ -8,66 +8,83 @@ namespace BasicApp\RESTful\Actions;
 
 use Webmozart\Assert\Assert;
 
-class NewAction extends \BasicApp\Action\Action
+class NewAction extends BaseAction
 {
 
-    public $modelName;
-
-    public $parentModelName;
+    use ParentTrait;
 
     public $template = 'new';
 
-    public function run($method, ...$params)
+    public $beforeNew;
+
+    public function initialize(?string $method = null)
     {
-        $modelName = $this->modelName;
+        parent::initialize($method);
 
-        $parentModelName = $this->parentModelName;
+        $this->initializeParent();
 
-        $template = $this->template;
+        Assert::notEmpty($this->modelName, 'Model name not defined.');
 
-        return function($method) use ($modelName, $parentModelName, $template)
+        $this->model = model($this->modelName, false);
+
+        Assert::notEmpty($this->model, 'Model not found: ' . $this->modelName);
+    
+        if ($this->parentModelName)
+        {
+            $this->parentModel = model($this->parentModelName, false);
+
+            Assert::notEmpty($this->parentModel, 'Parent model not found: ' . $this->parentModelName);
+        }
+    }
+
+    public function run(...$params)
+    {
+        $action = $this;
+
+        return function(...$params) use ($action)
         {    
-            Assert::notEmpty($modelName, 'Model name not defined.');
-
-            $model = model($modelName, false);
-
-            Assert::notEmpty($model, 'Model not found: ' . $modelName);
-
             $defaults = [];
-
-            $parentData = null;
 
             if ($this->parentKey)
             {
-                Assert::notEmpty($parentModelName, 'Parent model not defined.');
-
-                $parentModel = model($parentModelName, false);
-
-                Assert::notEmpty($parentModel, 'Parent model not found: ' . $parentModelName);
+                /*
+                Assert::notEmpty($action->parentModelName, 'Parent model not defined.');
 
                 $parentId = $this->request->getGet('parentId');
 
-                Assert::notEmpty($parentId, 'parentId not defined.');
+                Assert::notEmpty($acparentId, 'parentId not defined.');
                 
-                $parentData = $parentModel->findOrFail($parentId, 'Parent not found.');
+                $parentData = $action->parentModel->findOrFail($parentId, 'Parent not found.');
 
-                $parentId = $parentModel->getIdValue($parentData);
+                $parentId = $action->parentModel->getIdValue($parentData);
+                */
 
-                $defaults[$this->parentKey] = $parentId;
+                $defaults[$action->parentKey] = $action->parentId;
             }
 
-            $data = $model->createData($defaults);
+            $action->data = $action->model->createData($defaults);
 
-            $data->fill($this->request->getGet());
+            $action->data->fill($this->request->getGet());
 
-            if (!$this->userCanMethod($this->user, $method, $error))
+            if ($action->beforeNew)
             {
-                $this->throwSecurityException($error ?? lang('Access denied.'));
+                $result = $this->trigger($action->beforeNew, [
+                    'model' => $action->model,
+                    'data' => $action->data,
+                    'parentModel' => $action->parentModel,
+                    'parentData' => $action->parentData,
+                    'result' => null
+                ]);
+
+                if ($result['result'] !== null)
+                {
+                    return $result['result'];
+                }
             }
         
-            return $this->render($template, [
-                'parentData' => $parentData,
-                'data' => $data
+            return $this->render($action->template, [
+                'parentData' => $action->parentData,
+                'data' => $action->data
             ]);
         };
     }

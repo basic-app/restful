@@ -18,8 +18,6 @@ class ResourceController extends BaseResourceController
     use Traits\EditTrait;
     use Traits\ViewTrait;
     use Traits\UpdateTrait;
-    use Traits\MassEditTrait;    
-    use Traits\MassUpdateTrait;
     use Traits\ShowTrait;
     use Traits\DeleteTrait;
 

@@ -9,22 +9,29 @@ namespace BasicApp\RESTful\Actions;
 use Webmozart\Assert\Assert;
 use BasicApp\Entity\ActiveEntityInterface;
 
-class MassUpdateAction extends \BasicApp\Action\Action
+class MassUpdateAction extends BaseAction
 {
 
     public $modelName;
 
-    public function run($method, ...$params)
+    public $beforeMassUpdate;
+
+    public function initialize(?string $method = null)
     {
-        $modelName = $this->modelName;
+        parent::initialize($method);
+    }
 
-        return function($method) use ($modelName)
+    public function run(...$params)
+    {
+        $action = $this;
+
+        return function(...$params) use ($action)
         {
-            Assert::notEmpty($modelName, 'Model name not defined.');
+            Assert::notEmpty($action->modelName, 'Model name not defined.');
 
-            $model = model($modelName, false);
+            $model = model($action->modelName, false);
 
-            Assert::notEmpty($model, 'Model not found: ' . $modelName);
+            Assert::notEmpty($model, 'Model not found: ' . $action->modelName);
 
             $this->data = [];
 
@@ -40,20 +47,35 @@ class MassUpdateAction extends \BasicApp\Action\Action
                 Assert::keyExists($this->data, $id, lang('Entity not found: #{id}', ['id' => $id]));
             }
 
-            if (!$this->userCanMethod($this->user, $method, $error))
-            {
-                $this->throwSecurityException($error ?? lang('Access denied.'));
-            }
-
             $validationErrors = [];
 
             $errors = [];
+
+            if ($action->beforeMassUpdate)
+            {
+                $result = $this->trigger($action->beforeMassUpdate, [
+                    'model' => $model,
+                    'data' => $data,
+                    'errors' => $errors,
+                    'validationErrors' => $validationErrors,
+                    'result' => null
+                ]);
+
+                if ($result['result'] !== null)
+                {
+                    return $result['result'];
+                }
+
+                $errors = $result['errors'];
+
+                $validationErrors = $result['validationErrors'];
+            }
 
             $saved = true;
 
             foreach($this->data as $id => $entity)
             {
-                $entity->fill($this->request->getJSON(true));
+                $entity->fill($this->getRequestData());
             
                 if (!$entity->save($customErrors))
                 {

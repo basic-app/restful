@@ -8,34 +8,50 @@ namespace BasicApp\RESTful\Actions;
 
 use Webmozart\Assert\Assert;
 
-class MassEditAction extends \BasicApp\Action\Action
+class MassEditAction extends BaseAction
 {
 
     public $modelName;
 
-    public function run($method, ...$params)
+    public $beforeMassEdit;
+
+    public function initialize(?string $method)
     {
-        $modelName = $this->modelName;
+        parent::initialize($method);
+    }
 
-        return function($method) use ($modelName)
+    public function run(...$params)
+    {
+        $action = $this;
+
+        return function(...$params) use ($action)
         {
-            Assert::notEmpty($modelName, 'Model name not defined.');
+            Assert::notEmpty($action->modelName, 'Model name not defined.');
 
-            $model = model($modelName, false);
+            $model = model($action->modelName, false);
 
-            Assert::notEmpty($model, 'Model not found: ' . $modelName);
+            Assert::notEmpty($model, 'Model not found: ' . $action->modelName);
 
-            $this->data = $model->createEntity();
+            $data = $model->createEntity();
 
-            $this->data->fill($this->request->getGet());
+            $data->fill($this->request->getGet());
 
-            if (!$this->userCanMethod($this->user, $method, $error))
+            if ($action->beforeMassEdit)
             {
-                $this->throwSecurityException($error ?? lang('Access denied.'));
-            }            
+                $result = $this->trigger($action->beforeMassEdit, [
+                    'model' => $model,
+                    'data' => $data,
+                    'result' => null
+                ]);
+
+                if ($result['result'] !== null)
+                {
+                    return $result['result'];
+                }
+            }
 
             return $this->respondOK([
-                'data' => $this->data
+                'data' => $data
             ]);
         };
     }

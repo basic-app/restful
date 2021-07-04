@@ -9,42 +9,67 @@ namespace BasicApp\RESTful\Actions;
 use Webmozart\Assert\Assert;
 use BasicApp\Entity\ActiveEntityInterface;
 
-class DeleteAction extends \BasicApp\Action\Action
+class DeleteAction extends BaseAction
 {
+
+    public $id;
 
     public $modelName;
 
-    public function run($method, ...$params)
+    public $model;
+
+    public $data;
+
+    public $beforeDelete;
+
+    public function initialize(?string $method = null)
     {
-        $modelName = $this->modelName;
+        parent::initialize($method);
 
-        return function($method, $id) use ($modelName)
+        Assert::notEmpty($this->modelName, 'Model name not defined.');
+
+        $this->model = model($this->modelName, false);
+
+        Assert::notEmpty($this->model, 'Model not found: ' . $this->modelName);
+
+        if ($this->id)
         {
-            Assert::notEmpty($modelName, 'Model name not defined.');
+            $this->data = $this->model->findOne($this->id);
+        }
+    }
 
-            $model = model($modelName, false);
+    public function run(...$params)
+    {
+        $action = $this;
 
-            Assert::notEmpty($model, 'Model not found: ' . $modelName);
-
-            $data = $model->findOne($id);
-
-            if (!$data)
+        return function(...$params) use ($action)
+        {
+            if (!$action->data)
             {
                 return $this->failNotFound();
             }
 
-            if (!$this->userCanMethod($this->user, $method, $data))
+            if ($action->beforeDelete)
             {
-                $this->throwSecurityException(lang('Access denied.'));
+                $result = $this->trigger($action->beforeDelete, [
+                    'model' => $action->model,
+                    'data' => $action->data,
+                    'result' => null
+                ]);
+
+                if ($result['result'] !== null)
+                {
+                    return $result['result'];
+                }
             }
 
-            if ($data instanceof ActiveEntityInterface)
+            if ($action->data instanceof ActiveEntityInterface)
             {
-                $data->delete();
+                $action->data->delete();
             }
             else
             {
-                $model->deleteData($data);
+                $action->model->deleteData($action->data);
             }
             
             return $this->respondDeleted();

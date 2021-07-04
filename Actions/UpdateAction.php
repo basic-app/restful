@@ -9,66 +9,91 @@ namespace BasicApp\RESTful\Actions;
 use Webmozart\Assert\Assert;
 use BasicApp\Entity\ActiveEntityInterface;
 
-class UpdateAction extends \BasicApp\Action\Action
+class UpdateAction extends BaseAction
 {
 
     public $modelName;
 
-    public function run($method, ...$params)
+    public $model;
+
+    public $id;
+
+    public $data;
+
+    public $beforeUpdate;
+
+    public function initialize(?string $method = null)
     {
-        $modelName = $this->modelName;
+        parent::initialize($method);
 
-        return function($method, $id) use ($modelName)
+        Assert::notEmpty($this->modelName, 'Model name not defined.');
+
+        $this->model = model($this->modelName, false);
+
+        Assert::notEmpty($this->model, 'Model not found: ' . $this->modelName);
+    }
+
+    public function run(...$params)
+    {
+        $action = $this;
+
+        return function(...$params) use ($action)
         {
-            Assert::notEmpty($modelName, 'Model name not defined.');
-
-            $model = model($modelName, false);
-
-            Assert::notEmpty($model, 'Model not found: ' . $modelName);
-
-            $this->data = $model->findOne($id);
-
-            if (!$this->data)
+            if (!$action->data)
             {
                 return $this->failNotFound();
             }
 
-            if (!$this->userCanMethod($this->user, $method, $error))
-            {
-                $this->throwSecurityException($error ?? lang('Access denied.'));
-            }
+            $action->data->fill($this->getRequestData());
 
             $validationErrors = [];
 
             $errors = [];
 
-            $this->data->fill($this->request->getJSON(true));
-
-            if ($this->data instanceof ActiveEntityInterface)
+            if ($action->beforeUpdate)
             {
-                $saved = $this->data->save($errors); 
+                $result = $this->trigger($action->beforeUpdate, [
+                    'model' => $action->model,
+                    'data' => $action->data,
+                    'errors' => $errors,
+                    'validationErrors' => $validationErrors,
+                    'result' => null
+                ]);
 
-                $validationErrors = $this->data->errors();
+                if ($result['result'] !== null)
+                {
+                    return $result['result'];
+                }
+
+                $errors = $result['errors'];
+
+                $validationErrors = $result['validationErrors'];
+            }
+
+            if ($action->data instanceof ActiveEntityInterface)
+            {
+                if ($action->data->save($errors))
+                {
+                    return $this->respondUpdated();
+                }
+
+                $validationErrors = $action->data->errors();
             }
             else
             {
-                $saved = $model->save($this->data, $errors);
-            
-                $validationErrors = $model->errors();
-            }
+                if ($action->model->save($action->data, $errors))
+                {
+                    return $this->respondUpdated();
+                }
 
-            if ($saved)
-            {
-                return $this->respondUpdated();
+                $validationErrors = $action->model->errors();
             }
-
-            $result = [
-                'data' => $this->data,
+        
+            return $this->respondInvalidData([
+                'data' => $action->data,
                 'validationErrors' => (array) $validationErrors,
                 'errors' => (array) $errors
-            ];
-        
-            return $this->respondInvalidData($result);
+            ]);
         };
     }
 

@@ -11,16 +11,34 @@ trait ShowTrait
 
     protected $showModelName;
 
-    public function show($id = null)
+    protected $beforeShow = ['beforeShow'];
+
+    protected function beforeShow(array $data) : array
     {
-        if (!$this->isActionAllowed('show'))
+        return $data;        
+    }
+
+    public function show($id = null, ...$params)
+    {
+        if (!$this->isActionAllowed(__FUNCTION__, $error))
         {
-            $this->throwPageNotFoundException();            
+            throw PageNotFoundException::forPageNotFound($error ?? lang('Page not found.'));
         }
 
-        return $this->createAction('BasicApp\RESTful\Actions\ShowAction', [
-            'modelName' => $this->showModelName ?? $this->modelName
-        ])->execute('show', $id);
+        $action = $this->createAction('BasicApp\RESTful\Actions\ShowAction', [
+            'modelName' => $this->showModelName ?? $this->modelName,
+            'beforeShow' => 'beforeShow',
+            'id' => $id
+        ]);
+
+        $action->initialize(__FUNCTION__);
+
+        if (!$this->beforeAction($action, $error))
+        {
+            $this->throwSecurityException($error ?? lang('Access denied.'));
+        }        
+
+        return $action->execute(...$params);
     }
     
 }
