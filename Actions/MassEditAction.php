@@ -11,11 +11,9 @@ use Webmozart\Assert\Assert;
 class MassEditAction extends BaseAction
 {
 
-    public $modelName;
-
     public $beforeMassEdit;
 
-    public function initialize(?string $method)
+    public function initialize(?string $method = null)
     {
         parent::initialize($method);
     }
@@ -26,21 +24,15 @@ class MassEditAction extends BaseAction
 
         return function(...$params) use ($action)
         {
-            Assert::notEmpty($action->modelName, 'Model name not defined.');
+            $action->data = $action->model->createEntity();
 
-            $model = model($action->modelName, false);
-
-            Assert::notEmpty($model, 'Model not found: ' . $action->modelName);
-
-            $data = $model->createEntity();
-
-            $data->fill($this->request->getGet());
+            $action->data->fill($this->request->getGet());
 
             if ($action->beforeMassEdit)
             {
                 $result = $this->trigger($action->beforeMassEdit, [
-                    'model' => $model,
-                    'data' => $data,
+                    'model' => $action->model,
+                    'data' => $action->data,
                     'result' => null
                 ]);
 
@@ -51,7 +43,7 @@ class MassEditAction extends BaseAction
             }
 
             return $this->respondOK([
-                'data' => $data
+                'data' => $action->data
             ]);
         };
     }

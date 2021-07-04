@@ -6,6 +6,8 @@
  */
 namespace BasicApp\RESTful\Traits;
 
+use CodeIgniter\Exceptions\PageNotFoundException;
+
 trait ViewTrait
 {
 

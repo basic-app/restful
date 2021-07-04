@@ -6,6 +6,8 @@
  */
 namespace BasicApp\RESTful\Traits;
 
+use CodeIgniter\Exceptions\PageNotFoundException;
+
 trait CreateTrait
 {
 
@@ -28,6 +30,7 @@ trait CreateTrait
         $action = $this->createAction('BasicApp\RESTful\Actions\CreateAction', [
             'modelName' => $this->createModelName ?? $this->modelName,
             'parentModelName' => $this->parentModelName,
+            'parentKey' => $this->parentKey,
             'beforeCreate' => 'beforeCreate'
         ]);
 

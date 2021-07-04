@@ -12,8 +12,6 @@ use BasicApp\Entity\ActiveEntityInterface;
 class MassUpdateAction extends BaseAction
 {
 
-    public $modelName;
-
     public $beforeMassUpdate;
 
     public function initialize(?string $method = null)
@@ -27,24 +25,18 @@ class MassUpdateAction extends BaseAction
 
         return function(...$params) use ($action)
         {
-            Assert::notEmpty($action->modelName, 'Model name not defined.');
-
-            $model = model($action->modelName, false);
-
-            Assert::notEmpty($model, 'Model not found: ' . $action->modelName);
-
-            $this->data = [];
+            $action->data = [];
 
             $ids = $this->request->getGet('ids');
 
-            foreach($model->whereIn($model->primaryKey, $ids)->findAll() as $activeEntity)
+            foreach($action->model->whereIn($action->model->primaryKey, $ids)->findAll() as $activeEntity)
             {
-                $this->data[$activeEntity->getIdValue()] = $activeEntity;
+                $action->data[$activeEntity->getIdValue()] = $activeEntity;
             }
 
             foreach($ids as $id)
             {
-                Assert::keyExists($this->data, $id, lang('Entity not found: #{id}', ['id' => $id]));
+                Assert::keyExists($action->data, $id, lang('Entity not found: #{id}', ['id' => $id]));
             }
 
             $validationErrors = [];
@@ -54,8 +46,8 @@ class MassUpdateAction extends BaseAction
             if ($action->beforeMassUpdate)
             {
                 $result = $this->trigger($action->beforeMassUpdate, [
-                    'model' => $model,
-                    'data' => $data,
+                    'model' => $action->model,
+                    'data' => $action->data,
                     'errors' => $errors,
                     'validationErrors' => $validationErrors,
                     'result' => null
@@ -73,7 +65,7 @@ class MassUpdateAction extends BaseAction
 
             $saved = true;
 
-            foreach($this->data as $id => $entity)
+            foreach($action->data as $id => $entity)
             {
                 $entity->fill($this->getRequestData());
             
@@ -98,7 +90,7 @@ class MassUpdateAction extends BaseAction
             }
                     
             return $this->respondInvalidData([
-                'data' => $this->data,
+                'data' => $action->data,
                 'validationErrors' => $validationErrors,
                 'errors' => $errors
             ]);

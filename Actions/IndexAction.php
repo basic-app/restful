@@ -106,7 +106,7 @@ class IndexAction extends BaseAction
                     }
                 }
 
-                $elements = $model->prepareBuilder()->paginate($perPage);
+                $elements = $action->model->prepareBuilder()->paginate($perPage);
 
                 return $this->respondOK([
                     'parentData' => $action->parentData,

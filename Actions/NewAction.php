@@ -47,18 +47,6 @@ class NewAction extends BaseAction
 
             if ($this->parentKey)
             {
-                /*
-                Assert::notEmpty($action->parentModelName, 'Parent model not defined.');
-
-                $parentId = $this->request->getGet('parentId');
-
-                Assert::notEmpty($acparentId, 'parentId not defined.');
-                
-                $parentData = $action->parentModel->findOrFail($parentId, 'Parent not found.');
-
-                $parentId = $action->parentModel->getIdValue($parentData);
-                */
-
                 $defaults[$action->parentKey] = $action->parentId;
             }
 

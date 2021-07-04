@@ -20,6 +20,8 @@ class ResourcePresenter extends BaseResourcePresenter
     use Traits\UpdateTrait;
     use Traits\ShowTrait;
     use Traits\DeleteTrait;
+    use Traits\MassUpdateTrait;
+    use Traits\MassEditTrait;
 
     public function _remap($method, ...$params)
     {
