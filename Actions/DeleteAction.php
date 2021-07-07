@@ -12,30 +12,11 @@ use BasicApp\Entity\ActiveEntityInterface;
 class DeleteAction extends BaseAction
 {
 
-    public $id;
-
-    public $modelName;
-
-    public $model;
-
-    public $data;
-
     public $beforeDelete;
 
     public function initialize(?string $method = null)
     {
         parent::initialize($method);
-
-        Assert::notEmpty($this->modelName, 'Model name not defined.');
-
-        $this->model = model($this->modelName, false);
-
-        Assert::notEmpty($this->model, 'Model not found: ' . $this->modelName);
-
-        if ($this->id)
-        {
-            $this->data = $this->model->findOne($this->id);
-        }
     }
 
     public function run(...$params)

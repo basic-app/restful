@@ -22,12 +22,6 @@ class NewAction extends BaseAction
         parent::initialize($method);
 
         $this->initializeParent();
-
-        Assert::notEmpty($this->modelName, 'Model name not defined.');
-
-        $this->model = model($this->modelName, false);
-
-        Assert::notEmpty($this->model, 'Model not found: ' . $this->modelName);
     
         if ($this->parentModelName)
         {

@@ -31,7 +31,7 @@ abstract class BaseAction extends \BasicApp\Action\BaseAction
     
         if ($this->id)
         {
-            $this->data = $this->model->findOne($this->id);
+            $this->data = $this->model->prepareBuilder()->findOne($this->id);
         }
     }
 

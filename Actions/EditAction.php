@@ -28,16 +28,7 @@ class EditAction extends BaseAction
     {
         parent::initialize($method);
 
-        Assert::notEmpty($this->modelName, 'Model name not defined.');
-
-        $this->model = model($this->modelName, false);
-
-        Assert::notEmpty($this->model, 'Model not found: ' . $this->modelName);
-
-        if ($this->id)
-        {
-            $this->data = $this->model->findOne($this->id);
-        }
+        Assert::notEmpty($this->id);
     }
 
     public function run(...$params)

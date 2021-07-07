@@ -12,25 +12,11 @@ use BasicApp\Entity\ActiveEntityInterface;
 class UpdateAction extends BaseAction
 {
 
-    public $modelName;
-
-    public $model;
-
-    public $id;
-
-    public $data;
-
     public $beforeUpdate;
 
     public function initialize(?string $method = null)
     {
         parent::initialize($method);
-
-        Assert::notEmpty($this->modelName, 'Model name not defined.');
-
-        $this->model = model($this->modelName, false);
-
-        Assert::notEmpty($this->model, 'Model not found: ' . $this->modelName);
     }
 
     public function run(...$params)
