@@ -17,9 +17,9 @@ class NewAction extends BaseAction
 
     public $beforeNew;
 
-    public function initialize(?string $method = null)
+    public function initialize()
     {
-        parent::initialize($method);
+        parent::initialize();
 
         $this->initializeParent();
     

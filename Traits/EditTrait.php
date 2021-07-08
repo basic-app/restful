@@ -36,20 +36,18 @@ trait EditTrait
             $modelName = $this->editModelName ?? $this->modelName;
         }
 
-        $action = $this->createAction('BasicApp\RESTful\Actions\EditAction',[
+        $this->_actions[__FUNCTION__] = $this->createAction('BasicApp\RESTful\Actions\EditAction',[
             'modelName' => $modelName,
             'beforeEdit' => 'beforeEdit',
             'id' => $id
         ]);
 
-        $action->initialize(__FUNCTION__);
-
-        if (!$this->beforeAction($action, $error))
+        if (!$this->beforeAction(__FUNCTION__, $error))
         {
             $this->throwSecurityException($error ?? lang('Access denied.'));
         }
 
-        return $action->execute(...$params);
+        return ($this->_actions[__FUNCTION__])->execute(...$params);
     }
     
 }

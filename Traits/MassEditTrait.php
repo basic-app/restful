@@ -36,19 +36,17 @@ trait MassEditTrait
             $modelName = $this->massEditModelName ?? $this->modelName;
         }
 
-        $action = $this->createAction('BasicApp\RESTful\Actions\MassEditAction', [
+        $this->_actions[__FUNCTION__] = $this->createAction('BasicApp\RESTful\Actions\MassEditAction', [
             'modelName' => $modelName,
             'beforeMassEdit' => 'beforeMassEdit'
         ]);
 
-        $action->initialize(__FUNCTION__);
-
-        if (!$this->beforeAction($action, $error))
+        if (!$this->beforeAction(__FUNCTION__, $error))
         {
             $this->throwSecurityException($error ?? lang('Access denied.'));
         }
 
-        return $action->execute(...$params);
+        return ($this->_actions[__FUNCTION__])->execute(...$params);
     }
     
 }

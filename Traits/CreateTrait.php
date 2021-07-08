@@ -27,21 +27,19 @@ trait CreateTrait
             throw PageNotFoundException::forPageNotFound($error ?? lang('Page not found.'));
         }
 
-        $action = $this->createAction('BasicApp\RESTful\Actions\CreateAction', [
+        $this->_actions[__FUNCTION__] = $this->createAction('BasicApp\RESTful\Actions\CreateAction', [
             'modelName' => $this->createModelName ?? $this->modelName,
             'parentModelName' => $this->parentModelName,
             'parentKey' => $this->parentKey,
             'beforeCreate' => 'beforeCreate'
         ]);
 
-        $action->initialize(__FUNCTION__);
-
-        if (!$this->beforeAction($action, $error))
+        if (!$this->beforeAction(__FUNCTION__, $error))
         {
             $this->throwSecurityException($error ?? lang('Access denied.'));
         }
 
-        return $action->execute(...$params);
+        return ($this->_actions[__FUNCTION__])->execute(...$params);
     }
     
 }

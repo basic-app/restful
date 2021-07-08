@@ -27,21 +27,19 @@ trait IndexTrait
             throw PageNotFoundException::forPageNotFound($error ?? lang('Page not found.'));
         }
 
-        $action = $this->createAction('BasicApp\RESTful\Actions\IndexAction', [
+        $this->_actions[__FUNCTION__] = $this->createAction('BasicApp\RESTful\Actions\IndexAction', [
             'modelName' => $this->indexModelName ?? $this->modelName,
             'searchModelName' => $this->searchModelName,
             'parentModelName' => $this->parentModelName,
             'beforeIndex' => 'beforeIndex'
         ]);
 
-        if (!$this->beforeAction($action, $error))
+        if (!$this->beforeAction(__FUNCTION__, $error))
         {
             $this->throwSecurityException($error ?? lang('Access denied.'));
         }
 
-        $action->initialize(__FUNCTION__);
-
-        return $action->execute(...$params);
+        return ($this->_actions[__FUNCTION__])->execute(...$params);
     }
     
 }

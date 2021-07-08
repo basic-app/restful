@@ -36,20 +36,18 @@ trait NewTrait
             $modelName = $this->newModelName ?? $this->modelName;
         }
 
-        $action = $this->createAction('BasicApp\RESTful\Actions\NewAction', [
+        $this->_actions[__FUNCTION__] = $this->createAction('BasicApp\RESTful\Actions\NewAction', [
             'modelName' => $modelName,
             'parentModelName' => $this->parentModelName,
             'beforeNew' => 'beforeNew'
         ]);
 
-        $action->initialize(__FUNCTION__);
-
-        if (!$this->beforeAction($action, $error))
+        if (!$this->beforeAction(__FUNCTION__, $error))
         {
             $this->throwSecurityException($error ?? lang('Access denied.'));
         }
 
-        return $action->execute(...$params);
+        return ($this->_actions[__FUNCTION__])->execute(...$params);
     }
     
 }

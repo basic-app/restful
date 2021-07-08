@@ -19,9 +19,9 @@ abstract class BaseAction extends \BasicApp\Action\BaseAction
 
     public $data;
 
-    public function initialize(?string $method = null)
+    public function initialize()
     {
-        parent::initialize($method);
+        parent::initialize();
 
         Assert::notEmpty($this->modelName, 'Model name not defined.');
 

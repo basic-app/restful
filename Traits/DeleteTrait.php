@@ -27,20 +27,18 @@ trait DeleteTrait
             throw PageNotFoundException::forPageNotFound($error ?? lang('Page not found.'));
         }
 
-        $action = $this->createAction('BasicApp\RESTful\Actions\DeleteAction', [
+        $this->_actions[__FUNCTION__] = $this->createAction('BasicApp\RESTful\Actions\DeleteAction', [
             'modelName' => $this->deleteModelName ?? $this->modelName,
             'beforeDelete' => 'beforeDelete',
             'id' => $id
         ]);
 
-        $action->initialize(__FUNCTION__);
-
-        if (!$this->beforeAction($action, $error))
+        if (!$this->beforeAction(__FUNCTION__, $error))
         {
             $this->throwSecurityException($error ?? lang('Access denied.'));
         }
 
-        return $action->execute(...$params);
+        return ($this->_actions[__FUNCTION__])->execute(...$params);
     }
     
 }

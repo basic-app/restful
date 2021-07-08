@@ -14,9 +14,9 @@ class DeleteAction extends BaseAction
 
     public $beforeDelete;
 
-    public function initialize(?string $method = null)
+    public function initialize()
     {
-        parent::initialize($method);
+        parent::initialize();
     }
 
     public function run(...$params)

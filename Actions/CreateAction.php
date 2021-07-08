@@ -16,9 +16,9 @@ class CreateAction extends BaseAction
 
     public $beforeCreate;
 
-    public function initialize(?string $method = null)
+    public function initialize()
     {
-        parent::initialize($method);
+        parent::initialize();
 
         $this->initializeParent();
     }
