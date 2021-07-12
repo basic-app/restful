@@ -11,6 +11,8 @@ use CodeIgniter\Exceptions\PageNotFoundException;
 trait IndexTrait
 {
 
+    protected $sortLabels = [];
+
     protected $indexModelName;
 
     protected $beforeIndex = ['beforeIndex'];
@@ -30,6 +32,7 @@ trait IndexTrait
         $this->_actions[__FUNCTION__] = $this->createAction('BasicApp\RESTful\Actions\IndexAction', [
             'modelName' => $this->indexModelName ?? $this->modelName,
             'searchModelName' => $this->searchModelName,
+            'sortLabels' => $this->sortLabels,
             'parentModelName' => $this->parentModelName,
             'beforeIndex' => 'beforeIndex'
         ]);

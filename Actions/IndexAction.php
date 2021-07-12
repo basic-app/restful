@@ -14,7 +14,10 @@ class IndexAction extends BaseAction
 {
 
     use ParentTrait;
+
     use SearchTrait;
+
+    use SortTrait;
 
     public $beforeIndex;
 
@@ -23,8 +26,8 @@ class IndexAction extends BaseAction
         parent::initialize();
 
         $this->initializeParent();
-
         $this->initializeSearch();
+        $this->initializeSort();
     }
 
     public function run(...$params)
@@ -81,6 +84,16 @@ class IndexAction extends BaseAction
                 }
             }
 
+            $result = [];
+
+            $result['parentData'] = $action->parentData;
+            $result['searchData'] = $action->searchData;
+
+            if ($this->sortLabels !== null)
+            {
+                $result['sortLabels'] = $this->sortLabels;
+            }
+
             if ($this->perPage)
             {
                 $perPage = (int) $this->request->getGet('perPage');
@@ -106,27 +119,19 @@ class IndexAction extends BaseAction
                     }
                 }
 
-                $elements = $action->model->prepareBuilder()->paginate($perPage);
+                $result['elements'] = $action->model->prepareBuilder()->paginate($perPage);
+                $result['currentPage'] = $action->model->pager->getCurrentPage();
+                $result['perPage'] = $action->model->pager->getPerPage();
+                $result['pageCount'] = $action->model->pager->getPageCount();
+                $result['total'] = $action->model->pager->getTotal();
 
-                return $this->respondOK([
-                    'parentData' => $action->parentData,
-                    'elements' => $elements,
-                    'searchData' => $action->searchData,
-                    'currentPage' => $action->model->pager->getCurrentPage(),
-                    'perPage' => $action->model->pager->getPerPage(),
-                    'pageCount' => $action->model->pager->getPageCount(),
-                    'total' => $action->model->pager->getTotal()
-                ]);
+                return $this->respondOK($result);
             }
             else
             {
-                $elements = $action->model->prepareBuilder()->findAll();
+                $result['elements'] = $action->model->prepareBuilder()->findAll();
             
-                return $this->respondOK([
-                    'parentData' => $action->parentData,
-                    'elements' => $elements,
-                    'searchData' => $action->searchData
-                ]);
+                return $this->respondOK($result);
             }
         };
     }
