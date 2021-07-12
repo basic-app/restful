@@ -26,7 +26,9 @@ class IndexAction extends BaseAction
         parent::initialize();
 
         $this->initializeParent();
+
         $this->initializeSearch();
+
         $this->initializeSort();
     }
 
@@ -87,6 +89,7 @@ class IndexAction extends BaseAction
             $result = [];
 
             $result['parentData'] = $action->parentData;
+            
             $result['searchData'] = $action->searchData;
 
             if ($this->sortLabels !== null)

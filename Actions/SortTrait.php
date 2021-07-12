@@ -15,7 +15,12 @@ trait SortTrait
 
     public function initializeSort()
     {
-        $sortItems = $this->model->getSortItems();
+        if (!property_exists($this, 'searchModel'))
+        {
+            return;
+        }
+
+        $sortItems = $this->searchModel->getSortItems();
 
         if ($sortItems)
         {
@@ -29,14 +34,14 @@ trait SortTrait
                     {
                         if ($key_segments[1] == 'asc')
                         {
-                            $this->sortLabels[$key] = $this->model->getAttributeLabel($key_segments[0]) . lang(' (asc)');
+                            $this->sortLabels[$key] = $this->model->getFieldLabel($key_segments[0]) . lang(' (asc)');
                         
                             continue;
                         }
 
                         if ($key_segments[1] == 'desc')
                         {
-                            $this->sortLabels[$key] = $this->model->getAttributeLabel($key_segments[0]) . lang(' (desc)');
+                            $this->sortLabels[$key] = $this->model->getFieldLabel($key_segments[0]) . lang(' (desc)');
                         
                             continue;
                         }
