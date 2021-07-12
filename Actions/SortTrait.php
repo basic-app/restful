@@ -15,12 +15,12 @@ trait SortTrait
 
     public function initializeSort()
     {
-        if (!property_exists($this, 'searchModel'))
+        if ($this->sortLabels === null)
         {
             return;
         }
 
-        $sortItems = $this->searchModel->getSortItems();
+        $sortItems = $this->model->getSortItems();
 
         if ($sortItems)
         {
@@ -51,6 +51,11 @@ trait SortTrait
                 }
             }
         }
+    }
+
+    public function getSortLabels() : ?array
+    {
+        return $this->sortLabels;
     }
 
 }

@@ -92,11 +92,13 @@ class IndexAction extends BaseAction
             
             $result['searchData'] = $action->searchData;
 
-            if ($this->sortLabels !== null)
-            {
-                $result['sortLabels'] = $this->sortLabels;
-            }
+            $sortLabels = $action->getSortLabels();
 
+            if ($sortLabels !== null)
+            {
+                $result['sortLabels'] = $sortLabels;
+            }
+            
             if ($this->perPage)
             {
                 $perPage = (int) $this->request->getGet('perPage');
