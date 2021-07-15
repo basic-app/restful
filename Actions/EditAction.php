@@ -12,14 +12,6 @@ use Webmozart\Assert\Assert;
 class EditAction extends BaseAction
 {
 
-    public $modelName;
-
-    public $model;
-
-    public $data;
-
-    public $id;
-
     public $beforeEdit;
 
     public $template = 'edit';
