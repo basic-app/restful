@@ -16,6 +16,8 @@ class EditAction extends BaseAction
 
     public $template = 'edit';
 
+    public $defaultParams = [];
+
     public function initialize()
     {
         parent::initialize();
@@ -39,8 +41,11 @@ class EditAction extends BaseAction
                 $result = $this->trigger($action->beforeEdit, [
                     'model' => $action->model,
                     'data' => $action->data,
+                    'defaultParams' => $action->defaultParams,
                     'result' => null
                 ]);
+
+                $action->defaultParams = $result['defaultParams'];
 
                 if ($result['result'] !== null)
                 {
@@ -48,9 +53,11 @@ class EditAction extends BaseAction
                 }
             }
 
-            return $this->respondOK([
-                'data' => $action->data
-            ]);
+            $params = $action->defaultParams;
+
+            $params['data'] = $action->data;
+
+            return $this->respondOK($params);
         };
     }
 
