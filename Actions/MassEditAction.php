@@ -13,6 +13,8 @@ class MassEditAction extends BaseAction
 
     public $beforeMassEdit;
 
+    public $defaultParams = [];
+
     public function initialize()
     {
         parent::initialize();
@@ -28,11 +30,17 @@ class MassEditAction extends BaseAction
 
             $action->data->fill($this->request->getGet());
 
+            $params = $action->defaultParams;
+
+            $params['data'] = $action->data;
+
             if ($action->beforeMassEdit)
             {
                 $result = $this->trigger($action->beforeMassEdit, [
                     'model' => $action->model,
                     'data' => $action->data,
+                    'defaultParams' => $action->defaultParams,
+                    'params' => [],
                     'result' => null
                 ]);
 
@@ -40,11 +48,11 @@ class MassEditAction extends BaseAction
                 {
                     return $result['result'];
                 }
+
+                $params = array_merge($params, $result['params']);
             }
 
-            return $this->respondOK([
-                'data' => $action->data
-            ]);
+            return $this->respondOK($params);
         };
     }
 

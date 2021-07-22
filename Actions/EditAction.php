@@ -36,26 +36,27 @@ class EditAction extends BaseAction
                 return $this->failNotFound();
             }
 
+            $params = $action->defaultParams;
+
+            $params['data'] = $action->data;
+
             if ($action->beforeEdit)
             {
                 $result = $this->trigger($action->beforeEdit, [
                     'model' => $action->model,
                     'data' => $action->data,
                     'defaultParams' => $action->defaultParams,
+                    'params' => [],
                     'result' => null
                 ]);
-
-                $action->defaultParams = $result['defaultParams'];
 
                 if ($result['result'] !== null)
                 {
                     return $result['result'];
                 }
+
+                $params = array_merge($params, $result['params']);
             }
-
-            $params = $action->defaultParams;
-
-            $params['data'] = $action->data;
 
             return $this->respondOK($params);
         };
