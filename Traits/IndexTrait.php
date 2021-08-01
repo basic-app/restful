@@ -33,6 +33,7 @@ trait IndexTrait
             'modelName' => $this->indexModelName ?? $this->modelName,
             'searchModelName' => $this->searchModelName,
             'sortLabels' => $this->sortLabels,
+            'parentKey' => $this->parentKey,
             'parentModelName' => $this->parentModelName,
             'beforeIndex' => 'beforeIndex'
         ]);
