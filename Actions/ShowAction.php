@@ -13,6 +13,8 @@ class ShowAction extends BaseAction
 
     public $beforeShow;
 
+    public $responseParams = [];
+
     public function initialize()
     {
         parent::initialize();
@@ -29,23 +31,28 @@ class ShowAction extends BaseAction
                 return $this->failNotFound();
             }
 
+            $response = $this->responseParams;
+
             if ($action->beforeShow)
             {
                 $result = $this->trigger($action->beforeShow, [
                     'model' => $action->model,
                     'data' => $action->data,
-                    'response' => null
+                    'response' => null,
+                    'responseParams' => $response
                 ]);
 
                 if ($result['response'] !== null)
                 {
                     return $result['response'];
                 }
+
+                $response = array_merge($response, $result['responseParams']);
             }
 
-            return $this->respondOK([
-                'data' => $action->data
-            ]);
+            $response['data'] = $action->data;
+ 
+            return $this->respondOK($response);
         };
     }
 
