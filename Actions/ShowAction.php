@@ -34,12 +34,12 @@ class ShowAction extends BaseAction
                 $result = $this->trigger($action->beforeShow, [
                     'model' => $action->model,
                     'data' => $action->data,
-                    'result' => null
+                    'response' => null
                 ]);
 
-                if ($result['result'] !== null)
+                if ($result['response'] !== null)
                 {
-                    return $result['result'];
+                    return $result['response'];
                 }
             }
 

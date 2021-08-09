@@ -35,12 +35,12 @@ class DeleteAction extends BaseAction
                 $result = $this->trigger($action->beforeDelete, [
                     'model' => $action->model,
                     'data' => $action->data,
-                    'result' => null
+                    'response' => null
                 ]);
 
-                if ($result['result'] !== null)
+                if ($result['response'] !== null)
                 {
-                    return $result['result'];
+                    return $result['response'];
                 }
             }
 

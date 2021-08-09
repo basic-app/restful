@@ -50,12 +50,12 @@ class MassUpdateAction extends BaseAction
                     'data' => $action->data,
                     'errors' => $errors,
                     'validationErrors' => $validationErrors,
-                    'result' => null
+                    'response' => null
                 ]);
 
-                if ($result['result'] !== null)
+                if ($result['response'] !== null)
                 {
-                    return $result['result'];
+                    return $result['response'];
                 }
 
                 $errors = $result['errors'];

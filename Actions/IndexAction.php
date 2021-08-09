@@ -21,6 +21,8 @@ class IndexAction extends BaseAction
 
     public $beforeIndex;
 
+    public $responseParams = [];
+
     public function initialize()
     {
         parent::initialize();
@@ -47,6 +49,8 @@ class IndexAction extends BaseAction
 
             $validationErrors = [];
 
+            $response = $action->responseParams;
+
             if ($action->beforeIndex)
             {
                 $result = $this->trigger($action->beforeIndex, [
@@ -58,17 +62,20 @@ class IndexAction extends BaseAction
                     'searchData' => $action->searchData,
                     'errors' => $errors,
                     'validationErrors' => $validationErrors,
-                    'result' => null
+                    'responseParams' => $response,
+                    'response' => null
                 ]);
 
-                if ($result['result'] !== null)
+                if ($result['response'] !== null)
                 {
-                    return $result['result'];
+                    return $result['response'];
                 }
 
                 $errors = $result['errors'];
 
                 $validationErrors = $result['validationErrors'];
+
+                $response = array_merge($response, $result['responseParams']);
             }
 
             if ($action->searchModel)
@@ -86,17 +93,15 @@ class IndexAction extends BaseAction
                 }
             }
 
-            $result = [];
-
-            $result['parentData'] = $action->parentData;
+            $response['parentData'] = $action->parentData;
             
-            $result['searchData'] = $action->searchData;
+            $response['searchData'] = $action->searchData;
 
             $sortLabels = $action->getSortLabels();
 
             if ($sortLabels !== null)
             {
-                $result['sortLabels'] = $sortLabels;
+                $response['sortLabels'] = $sortLabels;
             }
             
             if ($this->perPage)
@@ -124,19 +129,19 @@ class IndexAction extends BaseAction
                     }
                 }
 
-                $result['elements'] = $action->model->prepareBuilder()->paginate($perPage);
-                $result['currentPage'] = $action->model->pager->getCurrentPage();
-                $result['perPage'] = $action->model->pager->getPerPage();
-                $result['pageCount'] = $action->model->pager->getPageCount();
-                $result['total'] = $action->model->pager->getTotal();
+                $response['elements'] = $action->model->prepareBuilder()->paginate($perPage);
+                $response['currentPage'] = $action->model->pager->getCurrentPage();
+                $response['perPage'] = $action->model->pager->getPerPage();
+                $response['pageCount'] = $action->model->pager->getPageCount();
+                $response['total'] = $action->model->pager->getTotal();
 
-                return $this->respondOK($result);
+                return $this->respondOK($response);
             }
             else
             {
-                $result['elements'] = $action->model->prepareBuilder()->findAll();
+                $response['elements'] = $action->model->prepareBuilder()->findAll();
             
-                return $this->respondOK($result);
+                return $this->respondOK($response);
             }
         };
     }

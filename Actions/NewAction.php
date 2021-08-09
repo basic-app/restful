@@ -17,6 +17,8 @@ class NewAction extends BaseAction
 
     public $beforeNew;
 
+    public $responseParams = [];
+
     public function initialize()
     {
         parent::initialize();
@@ -48,6 +50,8 @@ class NewAction extends BaseAction
 
             $action->data->fill($this->request->getGet());
 
+            $response = $action->responseParams;
+
             if ($action->beforeNew)
             {
                 $result = $this->trigger($action->beforeNew, [
@@ -55,19 +59,23 @@ class NewAction extends BaseAction
                     'data' => $action->data,
                     'parentModel' => $action->parentModel,
                     'parentData' => $action->parentData,
-                    'result' => null
+                    'responseParams' => $response,
+                    'response' => null
                 ]);
 
-                if ($result['result'] !== null)
+                if ($result['response'] !== null)
                 {
-                    return $result['result'];
+                    return $result['response'];
                 }
+
+                $response = array_merge($response, $result['responseParams']);
             }
+
+            $response['parentData'] = $action->parentData;
+
+            $response['data'] = $action->data;
         
-            return $this->render($action->template, [
-                'parentData' => $action->parentData,
-                'data' => $action->data
-            ]);
+            return $this->render($action->template, $response);
         };
     }
 

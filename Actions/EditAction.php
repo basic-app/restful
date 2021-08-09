@@ -16,7 +16,7 @@ class EditAction extends BaseAction
 
     public $template = 'edit';
 
-    public $defaultParams = [];
+    public $responseParams = [];
 
     public function initialize()
     {
@@ -36,29 +36,28 @@ class EditAction extends BaseAction
                 return $this->failNotFound();
             }
 
-            $params = $action->defaultParams;
-
-            $params['data'] = $action->data;
+            $response = $action->responseParams;
 
             if ($action->beforeEdit)
             {
                 $result = $this->trigger($action->beforeEdit, [
                     'model' => $action->model,
                     'data' => $action->data,
-                    'defaultParams' => $action->defaultParams,
-                    'params' => [],
-                    'result' => null
+                    'responseParams' => $response,
+                    'response' => null
                 ]);
 
-                if ($result['result'] !== null)
+                if ($result['response'] !== null)
                 {
-                    return $result['result'];
+                    return $result['response'];
                 }
 
-                $params = array_merge($params, $result['params']);
+                $response = array_merge($response, $result['responseParams']);
             }
 
-            return $this->respondOK($params);
+            $response['data'] = $action->data;
+
+            return $this->respondOK($response);
         };
     }
 
